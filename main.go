@@ -75,7 +75,6 @@ func main() {
 		publi := cleanQuotes(publi)
 		fmt.Printf("Getting news: %s\n", publi)
 		dataset := getPublications(publi)
-		fmt.Println(dataset)
 		for _, document := range dataset.Records {
 			fmt.Println(`Date:                `, document.Field.DateDePublication)
 			fmt.Println(`Auteurs:             `, document.Field.NomsDesAuteurs)
