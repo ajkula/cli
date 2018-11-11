@@ -48,6 +48,7 @@ type Filenames struct {
 // flags
 var (
 	user      string
+	publi     string
 	repo      string
 	movie     string
 	genre     string
@@ -69,6 +70,23 @@ func main() {
 	// if user does not supply flags, print usage
 	if flag.NFlag() == 0 {
 		printUsage()
+	}
+	if publi != "" {
+		publi := cleanQuotes(publi)
+		fmt.Printf("Getting news: %s\n", publi)
+		dataset := getPublications(publi)
+		fmt.Println(dataset)
+		for _, document := range dataset.Records {
+			fmt.Println(`Date:                `, document.Field.DateDePublication)
+			fmt.Println(`Auteurs:             `, document.Field.NomsDesAuteurs)
+			fmt.Println(`ReferenceHAL:        `, document.Field.ReferenceHAL)
+			fmt.Println(`Thematiques:         `, document.Field.Thematiques)
+			fmt.Println(`Titre:               `, document.Field.Titre)
+			fmt.Println(`Resume:              `, document.Field.Resume)
+			fmt.Println(`Numero national de structure de recherche:         `, document.Field.NumeroNationalDeStructureDeRecherche)
+			fmt.Println(`References archives OAI:                           `, document.Field.ReferencesArchivesOAI)
+			fmt.Println(`*************************** Publication ***************************`)
+		}
 	}
 
 	if proj != "" {
@@ -266,6 +284,7 @@ func init() {
 	flag.StringVarP(&reddit, "reddit", "R", "", "Search Reddit posts by keyword")
 	flag.StringVarP(&com, "com", "C", "", "Search Reddit comments by postId")
 	flag.StringVarP(&proj, "project", "p", "", "Create a Node.js micro-service by a name")
+	flag.StringVarP(&publi, "publi", "P", "", "Find scientific publications by search-word")
 
 	dir, _ := syscall.Getwd()
 	fmt.Println("dossier courant:", dir)
