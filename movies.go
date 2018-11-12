@@ -2,9 +2,11 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
+	"strings"
 )
 
 // constants
@@ -71,4 +73,34 @@ func cleanQuotes(s string) string {
 		}
 	}
 	return result
+}
+
+func DisplayMovies(name string) {
+	movies := strings.Split(cleanQuotes(movie), ",")
+	fmt.Printf("Searching movie(s): %s\n", strings.Split(movie, ","))
+	if len(movies) > 0 {
+		for _, u := range movies {
+			result := getMovie(u)
+			fmt.Println(`Title:         `, result.Title)
+			fmt.Println(`Year:          `, result.Year)
+			fmt.Println(`Type:          `, result.Type)
+			fmt.Println(`Rated:         `, result.Rated)
+			fmt.Println(`Released:      `, result.Released)
+			fmt.Println(`Runtime:       `, result.Runtime)
+			fmt.Println(`Genre:         `, result.Genre)
+			fmt.Println(`Director:      `, result.Director)
+			fmt.Println(`Writer:        `, result.Writer)
+			fmt.Println(`Actors:        `, result.Actors)
+			fmt.Println(`Plot:          `, result.Plot)
+			fmt.Println(`Language:      `, result.Language)
+			fmt.Println(`Country:       `, result.Country)
+			fmt.Println(`Awards:        `, result.Awards)
+			fmt.Println(`Poster:        `, result.Poster)
+			fmt.Println(`imdbRating:    `, result.ImdbRating)
+			fmt.Println(`ImdbVotes:     `, result.ImdbVotes)
+			fmt.Println(`DVD:           `, result.DVD)
+			fmt.Println(`ID:            `, result.ID)
+			fmt.Println("")
+		}
+	}
 }

@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 )
@@ -53,4 +54,25 @@ func getPublications(name string) Dataset {
 	var dataset Dataset
 	json.Unmarshal(body, &dataset)
 	return dataset
+}
+
+type Publications interface {
+	getPublications(name string) Dataset
+}
+
+func DisplayPublications(name string) {
+	name = cleanQuotes(name)
+	fmt.Printf("Getting publications: %s\n", name)
+	dataset := getPublications(name)
+	for _, document := range dataset.Records {
+		fmt.Println(`Date:                `, document.Field.DateDePublication)
+		fmt.Println(`Auteurs:             `, document.Field.NomsDesAuteurs)
+		fmt.Println(`ReferenceHAL:        `, document.Field.ReferenceHAL)
+		fmt.Println(`Thematiques:         `, document.Field.Thematiques)
+		fmt.Println(`Titre:               `, document.Field.Titre)
+		fmt.Println(`Resume:              `, document.Field.Resume)
+		fmt.Println(`Numero national de structure de recherche:         `, document.Field.NumeroNationalDeStructureDeRecherche)
+		fmt.Println(`References archives OAI:                           `, document.Field.ReferencesArchivesOAI)
+		fmt.Println(`*************************** Publication ***************************`)
+	}
 }

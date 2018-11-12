@@ -72,20 +72,7 @@ func main() {
 		printUsage()
 	}
 	if publi != "" {
-		publi := cleanQuotes(publi)
-		fmt.Printf("Getting news: %s\n", publi)
-		dataset := getPublications(publi)
-		for _, document := range dataset.Records {
-			fmt.Println(`Date:                `, document.Field.DateDePublication)
-			fmt.Println(`Auteurs:             `, document.Field.NomsDesAuteurs)
-			fmt.Println(`ReferenceHAL:        `, document.Field.ReferenceHAL)
-			fmt.Println(`Thematiques:         `, document.Field.Thematiques)
-			fmt.Println(`Titre:               `, document.Field.Titre)
-			fmt.Println(`Resume:              `, document.Field.Resume)
-			fmt.Println(`Numero national de structure de recherche:         `, document.Field.NumeroNationalDeStructureDeRecherche)
-			fmt.Println(`References archives OAI:                           `, document.Field.ReferencesArchivesOAI)
-			fmt.Println(`*************************** Publication ***************************`)
-		}
+		DisplayPublications(publi)
 	}
 
 	if proj != "" {
@@ -106,16 +93,15 @@ func main() {
 		filenames.storeMock = "store-mock.json"
 		filenames.testControllerFile = "testController.js"
 		filenames.empty = "EMPTY"
-
 		folders.write(proj)
 	}
 
 	if reddit != "" {
 		reddit := cleanQuotes(reddit)
 		if com != "" {
-			comm := cleanQuotes(com)
-			coms := getRedditComments(comm)
-			fmt.Printf("Searching reddit comments ID: %s\n", comm)
+			com := cleanQuotes(com)
+			coms := getRedditComments(com)
+			fmt.Printf("Searching reddit comments ID: %s\n", com)
 			for _, res := range coms {
 				for _, result := range res.Data.Children {
 					if result.Data.Selftext != "" {
@@ -157,33 +143,7 @@ func main() {
 
 	// if multiple users are passed separated by commas, store them in a "users" array
 	if movie != "" {
-		movies := strings.Split(cleanQuotes(movie), ",")
-		fmt.Printf("Searching movie(s): %s\n", strings.Split(movie, ","))
-		if len(movies) > 0 {
-			for _, u := range movies {
-				result := getMovie(u)
-				fmt.Println(`Title:         `, result.Title)
-				fmt.Println(`Year:          `, result.Year)
-				fmt.Println(`Type:          `, result.Type)
-				fmt.Println(`Rated:         `, result.Rated)
-				fmt.Println(`Released:      `, result.Released)
-				fmt.Println(`Runtime:       `, result.Runtime)
-				fmt.Println(`Genre:         `, result.Genre)
-				fmt.Println(`Director:      `, result.Director)
-				fmt.Println(`Writer:        `, result.Writer)
-				fmt.Println(`Actors:        `, result.Actors)
-				fmt.Println(`Plot:          `, result.Plot)
-				fmt.Println(`Language:      `, result.Language)
-				fmt.Println(`Country:       `, result.Country)
-				fmt.Println(`Awards:        `, result.Awards)
-				fmt.Println(`Poster:        `, result.Poster)
-				fmt.Println(`imdbRating:    `, result.ImdbRating)
-				fmt.Println(`ImdbVotes:     `, result.ImdbVotes)
-				fmt.Println(`DVD:           `, result.DVD)
-				fmt.Println(`ID:            `, result.ID)
-				fmt.Println("")
-			}
-		}
+		DisplayMovies(movie)
 	}
 
 	// if multiple users are passed separated by commas, store them in a "users" array
@@ -241,19 +201,7 @@ func main() {
 
 	// if multiple users are passed separated by commas, store them in a "users" array
 	if news != "" {
-		fmt.Printf("Getting news: %s\n", news)
-		results := getNews(news)
-		// fmt.Println(results)
-		for _, res := range results.Articles {
-			fmt.Println("**********************************************************")
-			fmt.Println(`Source:             `, res.Source.Name)
-			fmt.Println(`Publishing date:    `, res.PublishedAt)
-			fmt.Println(`Title:              `, res.Title)
-			// fmt.Println(`Description:        `, res.Description)
-			fmt.Println(`Content:            `, res.Content)
-			fmt.Println(`Url:                `, res.Url)
-			fmt.Println(`UrlToImage:         `, res.UrlToImage)
-		}
+		DisplayNews(news)
 	}
 }
 

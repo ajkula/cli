@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -60,4 +61,17 @@ func getNews(name string) Articles {
 	return news
 }
 
-// &country=
+func DisplayNews(name string) {
+	fmt.Printf("Getting news: %s\n", news)
+	results := getNews(news)
+	for _, res := range results.Articles {
+		fmt.Println("**********************************************************")
+		fmt.Println(`Source:             `, res.Source.Name)
+		fmt.Println(`Publishing date:    `, res.PublishedAt)
+		fmt.Println(`Title:              `, res.Title)
+		// fmt.Println(`Description:        `, res.Description)
+		fmt.Println(`Content:            `, res.Content)
+		fmt.Println(`Url:                `, res.Url)
+		fmt.Println(`UrlToImage:         `, res.UrlToImage)
+	}
+}
