@@ -47,6 +47,7 @@ type Filenames struct {
 
 // flags
 var (
+	city      string
 	user      string
 	publi     string
 	repo      string
@@ -203,6 +204,12 @@ func main() {
 	if news != "" {
 		DisplayNews(news)
 	}
+
+	if city != "" {
+		city = cleanQuotes(city)
+		meteoToday := getMeteoByCity(city)
+		fmt.Printf("%#v", meteoToday)
+	}
 }
 
 // "for... range" loop in GO allows us to iterate over each element of the array.
@@ -222,6 +229,7 @@ func init() {
 	// We pass the user variable we declared at the package level (above).
 	// The "&" character means we are passing the variable "by reference" (as opposed to "by value"),
 	// meaning: we don't want to pass a copy of the user variable. We want to pass the original variable.
+	flag.StringVarP(&city, "weather", "w", "", "get weather by [city,country code] (ex: paris,fr)")
 	flag.StringVarP(&user, "user", "u", "", "Search Github Users")
 	flag.StringVarP(&repo, "repo", "r", "", "Search Github repos by User")
 	flag.StringVarP(&movie, "movie", "m", "", "Search Movies")
