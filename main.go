@@ -6,7 +6,6 @@ package main
 import (
 	"bufio"
 	"fmt"
-	"log"
 	"os"
 	"os/exec"
 	"strconv"
@@ -20,7 +19,7 @@ import (
 
 func check(e error) {
 	if e != nil {
-		log.Fatalf("Error retrieving data: %s\n", e)
+		fmt.Printf("Error retrieving data: %s\n", e)
 	}
 }
 
@@ -75,7 +74,7 @@ func main() {
 	if publi != "" {
 		DisplayPublications(publi)
 	}
-
+	ReadSettingsFile()
 	if proj != "" {
 		proj := cleanQuotes(proj)
 		folders.currentFolder = "." + dir + "/" + proj + "/"
