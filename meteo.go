@@ -66,7 +66,7 @@ type MeteoCityNow struct {
 }
 
 func getMeteoByCity(name string) MeteoCityNow {
-	fmt.Println(url + name + appID)
+	fmt.Println(url + name)
 	url := url + name + appID
 	// send GET request to GitHub API with the requested user "name"
 	resp, err := http.Get(url)
@@ -93,3 +93,38 @@ func getMeteoByCity(name string) MeteoCityNow {
 	// fmt.Println(news.Articles)
 	return meteo
 }
+
+func DisplayWeather(city string) {
+	fmt.Printf("Getting weather: %s\n", city)
+	results := getMeteoByCity(city)
+	fmt.Println("***************** Weather *****************")
+	for _, w := range results.Weather {
+		fmt.Println(`Sky:                  `, w.Main)
+		fmt.Println(`icon:                 `, w.Icon)
+	}
+	fmt.Println(`Temperature:          `, kelvinToCelcius(results.Main.Temp))
+	fmt.Println(`Pressure:             `, results.Main.Pressure)
+	fmt.Println(`Humidity:             `, results.Main.Humidity)
+	fmt.Println(`Wind speed:           `, results.Wind.Speed)
+	fmt.Println(`Wind deg:             `, results.Wind.Deg)
+	fmt.Println(`City:                 `, results.Name+", "+results.Sys.Country)
+	fmt.Println(`Latitude:             `, results.Coord.Lat)
+	fmt.Println(`Longitude:            `, results.Coord.Lon)
+}
+
+func kelvinToCelcius(temp float32) string {
+	return fmt.Sprintf("%.2f", temp-273.15) + "°C"
+}
+
+/**
+city ID
+{
+    "id": 707860,
+    "name": "Hurzuf",
+    "country": "UA",
+    "coord": {
+      "lon": 34.283333,
+      "lat": 44.549999
+    }
+  },
+*/

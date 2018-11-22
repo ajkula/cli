@@ -206,8 +206,7 @@ func main() {
 
 	if city != "" {
 		city = cleanQuotes(city)
-		meteoToday := getMeteoByCity(city)
-		fmt.Printf("%#v", meteoToday)
+		DisplayWeather(city)
 	}
 }
 
@@ -278,7 +277,7 @@ func (pr Folders) write(name string) {
 	pjs := bufio.NewWriter(packageJson)
 	b, err := pjs.WriteString(createProject(name).packageJson)
 	check(err)
-	fmt.Println("wrote "+pr.currentFolder+filenames.packageJson, string(b)+" bytes")
+	fmt.Println("wrote "+pr.currentFolder+filenames.packageJson, intToString(b)+" bytes")
 	pjs.Flush()
 
 	indexFile, err := os.Create(pr.currentFolder + filenames.indexFile)
@@ -287,7 +286,7 @@ func (pr Folders) write(name string) {
 	idx := bufio.NewWriter(indexFile)
 	b, err = idx.WriteString(createProject(name).indexFile)
 	check(err)
-	fmt.Println("wrote "+pr.currentFolder+filenames.indexFile, string(b)+" bytes")
+	fmt.Println("wrote "+pr.currentFolder+filenames.indexFile, intToString(b)+" bytes")
 	idx.Flush()
 
 	gitignore, err := os.Create(pr.currentFolder + filenames.gitignore)
@@ -296,7 +295,7 @@ func (pr Folders) write(name string) {
 	git := bufio.NewWriter(gitignore)
 	b, err = git.WriteString(createProject(name).gitignore)
 	check(err)
-	fmt.Println("wrote "+pr.currentFolder+filenames.gitignore, string(b)+" bytes")
+	fmt.Println("wrote "+pr.currentFolder+filenames.gitignore, intToString(b)+" bytes")
 	git.Flush()
 
 	readme, err := os.Create(pr.currentFolder + filenames.readme)
@@ -305,7 +304,7 @@ func (pr Folders) write(name string) {
 	rdm := bufio.NewWriter(readme)
 	b, err = rdm.WriteString(createProject(name).readme)
 	check(err)
-	fmt.Println("wrote "+pr.currentFolder+filenames.readme, string(b)+" bytes")
+	fmt.Println("wrote "+pr.currentFolder+filenames.readme, intToString(b)+" bytes")
 	rdm.Flush()
 
 	serverFile, err := os.Create(pr.currentFolder + filenames.serverFile)
@@ -314,7 +313,7 @@ func (pr Folders) write(name string) {
 	srv := bufio.NewWriter(serverFile)
 	b, err = srv.WriteString(createProject(name).serverFile)
 	check(err)
-	fmt.Println("wrote "+pr.currentFolder+filenames.serverFile, string(b)+" bytes")
+	fmt.Println("wrote "+pr.currentFolder+filenames.serverFile, intToString(b)+" bytes")
 	srv.Flush()
 
 	storeMock, err := os.Create(pr.currentFolder + filenames.storeMock)
@@ -323,7 +322,7 @@ func (pr Folders) write(name string) {
 	str := bufio.NewWriter(storeMock)
 	b, err = str.WriteString(createProject(name).storeMock)
 	check(err)
-	fmt.Println("wrote "+pr.currentFolder+filenames.storeMock, string(b)+" bytes")
+	fmt.Println("wrote "+pr.currentFolder+filenames.storeMock, intToString(b)+" bytes")
 	str.Flush()
 
 	empty, err := os.Create(pr.connectors + filenames.empty)
@@ -332,7 +331,7 @@ func (pr Folders) write(name string) {
 	ept := bufio.NewWriter(empty)
 	b, err = ept.WriteString(createProject(name).empty)
 	check(err)
-	fmt.Println("wrote "+pr.currentFolder+filenames.empty, string(b)+" bytes")
+	fmt.Println("wrote "+pr.currentFolder+filenames.empty, intToString(b)+" bytes")
 	ept.Flush()
 
 	abstractControllerFile, err := os.Create(pr.controllers + filenames.abstractControllerFile)
@@ -341,7 +340,7 @@ func (pr Folders) write(name string) {
 	abc := bufio.NewWriter(abstractControllerFile)
 	b, err = abc.WriteString(createProject(name).abstractControllerFile)
 	check(err)
-	fmt.Println("wrote "+pr.currentFolder+filenames.abstractControllerFile, string(b)+" bytes")
+	fmt.Println("wrote "+pr.currentFolder+filenames.abstractControllerFile, intToString(b)+" bytes")
 	abc.Flush()
 
 	healthControllerFile, err := os.Create(pr.controllers + filenames.healthControllerFile)
@@ -350,7 +349,7 @@ func (pr Folders) write(name string) {
 	hlc := bufio.NewWriter(healthControllerFile)
 	b, err = hlc.WriteString(createProject(name).healthControllerFile)
 	check(err)
-	fmt.Println("wrote "+pr.currentFolder+filenames.healthControllerFile, string(b)+" bytes")
+	fmt.Println("wrote "+pr.currentFolder+filenames.healthControllerFile, intToString(b)+" bytes")
 	hlc.Flush()
 
 	testControllerFile, err := os.Create(pr.controllers + filenames.testControllerFile)
@@ -359,7 +358,7 @@ func (pr Folders) write(name string) {
 	tst := bufio.NewWriter(testControllerFile)
 	b, err = tst.WriteString(createProject(name).testControllerFile)
 	check(err)
-	fmt.Println("wrote "+pr.currentFolder+filenames.testControllerFile, string(b)+" bytes")
+	fmt.Println("wrote "+pr.currentFolder+filenames.testControllerFile, intToString(b)+" bytes")
 	tst.Flush()
 
 	cmd = exec.Command("npm", "i")
@@ -372,3 +371,19 @@ func (pr Folders) write(name string) {
 	cmd.Dir = name
 	cmd.Start()
 }
+
+func intToString(num int) string {
+	return fmt.Sprintf("%d", num)
+}
+
+// func writeFiles(pr Folders, fileName string) {
+// 	file, err := os.Create(pr.currentFolder + filename)
+// 	check(err)
+// 	defer file.Close()
+// 	writer := bufio.NewWriter(file)
+// 	b, err = writer.WriteString(createProject(name).(fileName))
+// 	check(err)
+// 	fmt.Println("wrote "+pr.currentFolder+filename, string(b)+" bytes")
+// 	writer.Flush()
+// 	wg.Done()
+// }

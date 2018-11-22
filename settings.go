@@ -11,6 +11,8 @@ type Settings struct {
 	Country string
 }
 
+func noFileError(e error) {}
+
 func ReadSettingsFile() {
 	file, err := os.Open("./settings.yml")
 	check(err)
