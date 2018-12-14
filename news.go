@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"log"
 	"net/http"
 )
 
@@ -38,9 +37,7 @@ func getNews(name string) Articles {
 	// send GET request to GitHub API with the requested user "name"
 	resp, err := http.Get(newsURL + "&country=" + name)
 	// if err occurs during GET request, then throw error and quit application
-	if err != nil {
-		log.Fatalf("Error retrieving data: %s\n", err)
-	}
+	check(err)
 
 	// Always good practice to defer closing the response body.
 	// If application crashes or function finishes successfully, GO will always execute this "defer" statement
@@ -48,9 +45,7 @@ func getNews(name string) Articles {
 
 	// read the response body and handle any errors during reading.
 	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		log.Fatalf("Error reading data: %s\n", err)
-	}
+	check(err)
 	// fmt.Println(string(body))
 
 	// create a user variable of type "User" struct to store the "Unmarshal"-ed (aka parsed JSON) data, then return the user
@@ -72,6 +67,11 @@ func DisplayNews(name string) {
 		// fmt.Println(`Description:        `, res.Description)
 		fmt.Println(`Content:            `, res.Content)
 		fmt.Println(`Url:                `, res.Url)
-		fmt.Println(`UrlToImage:         `, res.UrlToImage)
+		// fmt.Println(`UrlToImage:         `, res.UrlToImage)
+		fmt.Println()
+		if res.UrlToImage != "" {
+			asciiArt := Convert2Ascii(ScaleImage(fromUrlAndSize(res.UrlToImage, 80)))
+			fmt.Println(string(asciiArt))
+		}
 	}
 }
