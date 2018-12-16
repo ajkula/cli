@@ -33,7 +33,12 @@ func ScaleImage(img image.Image, w int) (image.Image, int, int) {
 	return img, w, h
 }
 
-func Convert2Ascii(img image.Image, w, h int) []byte {
+// Convert2Ascii(ScaleImage(fromUrlAndSize(res.UrlToImage, 80)))
+func Convert2Ascii(url string, width int) []byte {
+	return ConvertImg2Ascii(ScaleImage(fromUrlAndSize(url, width)))
+}
+
+func ConvertImg2Ascii(img image.Image, w, h int) []byte {
 	table := []byte(ASCIISTR)
 	buf := new(bytes.Buffer)
 

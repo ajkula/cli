@@ -70,7 +70,7 @@ func DisplayNews(name string) {
 		// fmt.Println(`UrlToImage:         `, res.UrlToImage)
 		fmt.Println()
 		if res.UrlToImage != "" {
-			asciiArt := Convert2Ascii(ScaleImage(fromUrlAndSize(res.UrlToImage, 80)))
+			asciiArt := Convert2Ascii(res.UrlToImage, 80)
 			fmt.Println(string(asciiArt))
 		}
 	}

@@ -6,7 +6,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"log"
 	"net/http"
 )
 
@@ -59,16 +58,12 @@ func getRedditPosts(name string) Posts {
 	// send GET request to GitHub API with the requested user "name"
 	req, err := http.NewRequest("GET", url, nil)
 	// if err occurs during GET request, then throw error and quit application
-	if err != nil {
-		log.Fatalf("Error retrieving data: %s\n", err)
-	}
+	check(err)
 	req.Header.Set("User-Agent", UserAgent)
 
 	// Handle the request
 	resp, err := http.DefaultClient.Do(req)
-	if err != nil {
-		log.Fatalf("Error reading data: %s\n", err)
-	}
+	check(err)
 
 	// Always good practice to defer closing the response body.
 	// If application crashes or function finishes successfully, GO will always execute this "defer" statement
@@ -76,9 +71,7 @@ func getRedditPosts(name string) Posts {
 
 	// read the response body and handle any errors during reading.
 	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		log.Fatalf("Error reading data: %s\n", err)
-	}
+	check(err)
 
 	// create a user variable of type "User" struct to store the "Unmarshal"-ed (aka parsed JSON) data, then return the user
 	var POSTS Posts
@@ -92,16 +85,12 @@ func getRedditComments(name string) []Comments {
 	url := redditApiURL + commentsEndPoint + name + limit
 	req, err := http.NewRequest("GET", url, nil)
 	// if err occurs during GET request, then throw error and quit application
-	if err != nil {
-		log.Fatalf("Error retrieving data: %s\n", err)
-	}
+	check(err)
 	req.Header.Set("User-Agent", UserAgent)
 
 	// Handle the request
 	resp, err := http.DefaultClient.Do(req)
-	if err != nil {
-		log.Fatalf("Error reading data: %s\n", err)
-	}
+	check(err)
 
 	// Always good practice to defer closing the response body.
 	// If application crashes or function finishes successfully, GO will always execute this "defer" statement
@@ -109,9 +98,7 @@ func getRedditComments(name string) []Comments {
 
 	// read the response body and handle any errors during reading.
 	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		log.Fatalf("Error reading data: %s\n", err)
-	}
+	check(err)
 	// fmt.Println(string(body))
 
 	var coms []Comments

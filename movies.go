@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"strings"
 )
@@ -43,9 +42,7 @@ func getMovie(name string) Movie {
 	// send GET request to GitHub API with the requested user "name"
 	resp, err := http.Get(imdbApiURL + "&t=" + name)
 	// if err occurs during GET request, then throw error and quit application
-	if err != nil {
-		log.Fatalf("Error retrieving data: %s\n", err)
-	}
+	check(err)
 
 	// Always good practice to defer closing the response body.
 	// If application crashes or function finishes successfully, GO will always execute this "defer" statement
@@ -53,9 +50,7 @@ func getMovie(name string) Movie {
 
 	// read the response body and handle any errors during reading.
 	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		log.Fatalf("Error reading data: %s\n", err)
-	}
+	check(err)
 
 	// create a user variable of type "User" struct to store the "Unmarshal"-ed (aka parsed JSON) data, then return the user
 	var movie Movie

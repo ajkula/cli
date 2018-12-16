@@ -5,7 +5,6 @@ package main
 import (
 	"encoding/json"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"time"
 )
@@ -81,9 +80,7 @@ func getUsers(name string) User {
 	// send GET request to GitHub API with the requested user "name"
 	resp, err := http.Get(githugApiURL + userEndpoint + name)
 	// if err occurs during GET request, then throw error and quit application
-	if err != nil {
-		log.Fatalf("Error retrieving data: %s\n", err)
-	}
+	check(err)
 
 	// Always good practice to defer closing the response body.
 	// If application crashes or function finishes successfully, GO will always execute this "defer" statement
@@ -91,9 +88,7 @@ func getUsers(name string) User {
 
 	// read the response body and handle any errors during reading.
 	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		log.Fatalf("Error reading data: %s\n", err)
-	}
+	check(err)
 
 	// create a user variable of type "User" struct to store the "Unmarshal"-ed (aka parsed JSON) data, then return the user
 	var user User
@@ -119,9 +114,7 @@ func getRepos(name string) Repos {
 	// send GET request to GitHub API with the requested user "name"
 	resp, err := http.Get(githugApiURL + userEndpoint + name + toRepos)
 	// if err occurs during GET request, then throw error and quit application
-	if err != nil {
-		log.Fatalf("Error retrieving data: %s\n", err)
-	}
+	check(err)
 
 	// Always good practice to defer closing the response body.
 	// If application crashes or function finishes successfully, GO will always execute this "defer" statement
@@ -129,9 +122,7 @@ func getRepos(name string) Repos {
 
 	// read the response body and handle any errors during reading.
 	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		log.Fatalf("Error reading data: %s\n", err)
-	}
+	check(err)
 
 	// create a user variable of type "User" struct to store the "Unmarshal"-ed (aka parsed JSON) data, then return the user
 	var repos Repos
