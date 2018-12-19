@@ -17,22 +17,27 @@ import (
 
 var ASCIISTR = "MND8OZ$7I?+=~:,.."
 
-func byPassErrors(e error) {
+func byPassErrors(e error) error {
 	if e != nil {
 		fmt.Printf("[Cannot recognize image format]\n")
-		return
+		return e
 	}
+	return nil
 }
 
-func fromUrlAndSize(url string, width int) (image.Image, int) {
+func fromUrlAndSize(url string, width int) (image.Image, int, error) {
 	res, err := http.Get(url)
-	check(err)
+	if byPassErrors(err) != nil {
+		return nil, 0, err
+	}
 
 	defer res.Body.Close()
 	img, _, err := image.Decode(res.Body)
-	byPassErrors(err)
+	if byPassErrors(err) != nil {
+		return nil, 0, err
+	}
 
-	return img, width
+	return img, width, nil
 }
 
 func ScaleImage(img image.Image, w int) (image.Image, int, int) {
@@ -44,7 +49,11 @@ func ScaleImage(img image.Image, w int) (image.Image, int, int) {
 
 // Convert2Ascii(ScaleImage(fromUrlAndSize(res.UrlToImage, 80)))
 func Convert2Ascii(url string, width int) []byte {
-	return ConvertImg2Ascii(ScaleImage(fromUrlAndSize(url, width)))
+	if img, width, err := fromUrlAndSize(url, width); err == nil {
+		return ConvertImg2Ascii(ScaleImage(img, width))
+	} else {
+		return []byte{}
+	}
 }
 
 func ConvertImg2Ascii(img image.Image, w, h int) []byte {
