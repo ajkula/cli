@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/nfnt/resize"
@@ -8,6 +9,7 @@ import (
 	"bytes"
 	"image"
 	"image/color"
+	_ "image/gif"
 	_ "image/jpeg"
 	_ "image/png"
 	"reflect"
@@ -15,13 +17,20 @@ import (
 
 var ASCIISTR = "MND8OZ$7I?+=~:,.."
 
+func byPassErrors(e error) {
+	if e != nil {
+		fmt.Printf("[Cannot recognize image format]\n")
+		return
+	}
+}
+
 func fromUrlAndSize(url string, width int) (image.Image, int) {
 	res, err := http.Get(url)
 	check(err)
 
 	defer res.Body.Close()
 	img, _, err := image.Decode(res.Body)
-	check(err)
+	byPassErrors(err)
 
 	return img, width
 }
