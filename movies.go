@@ -11,6 +11,7 @@ import (
 // constants
 const (
 	imdbApiURL = "http://www.omdbapi.com/?apikey=9c7cec43"
+	plot       = "&plot=full"
 )
 
 // User struct represents the JSON data from GitHub API: https://api.github.com/users/defunct
@@ -40,7 +41,7 @@ type Movie struct {
 // getUsers queries GitHub API for a given user
 func getMovie(name string) Movie {
 	// send GET request to GitHub API with the requested user "name"
-	resp, err := http.Get(imdbApiURL + "&t=" + name)
+	resp, err := http.Get(imdbApiURL + "&t=" + name + plot)
 	// if err occurs during GET request, then throw error and quit application
 	check(err)
 
@@ -70,12 +71,14 @@ func cleanQuotes(s string) string {
 	return result
 }
 
-func DisplayMovies(name string) {
+func DisplayMoviesByName(name string) {
 	movies := strings.Split(cleanQuotes(movie), ",")
 	fmt.Printf("Searching movie(s): %s\n", strings.Split(movie, ","))
 	if len(movies) > 0 {
 		for _, u := range movies {
 			result := getMovie(u)
+			fmt.Println(string(Convert2Ascii(result.Poster, 80)))
+			fmt.Println("")
 			fmt.Println(`Title:         `, result.Title)
 			fmt.Println(`Year:          `, result.Year)
 			fmt.Println(`Type:          `, result.Type)
@@ -90,12 +93,10 @@ func DisplayMovies(name string) {
 			fmt.Println(`Language:      `, result.Language)
 			fmt.Println(`Country:       `, result.Country)
 			fmt.Println(`Awards:        `, result.Awards)
-			fmt.Println(`Poster:        `, result.Poster)
 			fmt.Println(`imdbRating:    `, result.ImdbRating)
 			fmt.Println(`ImdbVotes:     `, result.ImdbVotes)
 			fmt.Println(`DVD:           `, result.DVD)
 			fmt.Println(`ID:            `, result.ID)
-			fmt.Println("")
 		}
 	}
 }

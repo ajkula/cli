@@ -22,20 +22,20 @@ const (
 // This struct was generated via a JSON-to-GO utility by Matt Holt: https://mholt.github.io/json-to-go/
 type Post struct {
 	Data struct {
-		Selftext   string `json:"Selftext"`
-		ID         string `json:"id"`
-		CreatedUTC int64  `json:"Created_utc"`
-		Author     string `json:"Author"`
+		Selftext   string  `json:"Selftext"`
+		ID         string  `json:"id"`
+		CreatedUTC float64 `json:"created_utc"`
+		Author     string  `json:"Author"`
 	} `json:"data"`
 }
 
 type Comment struct {
 	Data struct {
-		Selftext   string `json:"Selftext"`
-		ID         string `json:"id"`
-		CreatedUTC int64  `json:"Created_utc"`
-		Author     string `json:"Author"`
-		Body       string `json:"Body"`
+		Selftext   string  `json:"Selftext"`
+		ID         string  `json:"id"`
+		CreatedUTC float64 `json:"created_utc"`
+		Author     string  `json:"Author"`
+		Body       string  `json:"Body"`
 	} `json:"data"`
 }
 
@@ -72,6 +72,7 @@ func getRedditPosts(name string) Posts {
 	// read the response body and handle any errors during reading.
 	body, err := ioutil.ReadAll(resp.Body)
 	check(err)
+	// fmt.Println("####################", string(body))
 
 	// create a user variable of type "User" struct to store the "Unmarshal"-ed (aka parsed JSON) data, then return the user
 	var POSTS Posts

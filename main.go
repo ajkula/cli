@@ -58,12 +58,23 @@ var (
 	com       string
 	proj      string
 	dir       string
+	osTool    string
 	folders   Folders
 	filenames Filenames
 )
 
 // "main" is the entry point of our CLI app
 func main() {
+	var argsLength int
+	if len(os.Args) > 0 {
+		argsLength = len(os.Args)
+		argsContent := ""
+		for i := 0; i < argsLength; i++ {
+			argsContent += os.Args[i] + " "
+		}
+		fmt.Println(argsContent)
+	}
+
 	// parse flags
 	flag.Parse()
 
@@ -74,6 +85,11 @@ func main() {
 	if publi != "" {
 		DisplayPublications(publi)
 	}
+
+	if osTool != "" {
+		ListOSTools()
+	}
+
 	ReadSettingsFile()
 	if proj != "" {
 		proj := cleanQuotes(proj)
@@ -106,7 +122,7 @@ func main() {
 				for _, result := range res.Data.Children {
 					if result.Data.Selftext != "" {
 						{
-							fmt.Println(`Date:                `, result.Data.CreatedUTC)
+							fmt.Println(`Date:                `, GetDateFromTimeStamp(result.Data.CreatedUTC))
 							fmt.Println(`Author:              `, result.Data.Author)
 							fmt.Println(`PostId:              `, result.Data.ID)
 							fmt.Println(`PostContent:         `, result.Data.Selftext)
@@ -114,7 +130,7 @@ func main() {
 						}
 					} else if result.Data.Body != "" {
 						{
-							fmt.Println(`Date:                `, result.Data.CreatedUTC)
+							fmt.Println(`Date:                `, GetDateFromTimeStamp(result.Data.CreatedUTC))
 							fmt.Println(`Author:              `, result.Data.Author)
 							fmt.Println(`PostId:              `, result.Data.ID)
 							fmt.Println(`CommentContent:      `, result.Data.Body)
@@ -130,7 +146,7 @@ func main() {
 				if result.Data.Selftext != "" {
 					fmt.Printf("Searching reddit post(s): %s\n", com)
 					{
-						fmt.Println(`Date:                `, result.Data.CreatedUTC)
+						fmt.Println(`Date:                `, GetDateFromTimeStamp(result.Data.CreatedUTC))
 						fmt.Println(`Author:              `, result.Data.Author)
 						fmt.Println(`PostId:              `, result.Data.ID)
 						fmt.Println(`PostContent:         `, result.Data.Selftext)
@@ -143,7 +159,7 @@ func main() {
 
 	// if multiple users are passed separated by commas, store them in a "users" array
 	if movie != "" {
-		DisplayMovies(movie)
+		DisplayMoviesByName(movie)
 	}
 
 	// if multiple users are passed separated by commas, store them in a "users" array
@@ -201,7 +217,11 @@ func main() {
 
 	// if multiple users are passed separated by commas, store them in a "users" array
 	if news != "" {
-		DisplayNews(news)
+		if category != "" {
+			DisplayNewsByCategory(news, category)
+		} else {
+			DisplayNews(news)
+		}
 	}
 
 	if city != "" {
@@ -216,10 +236,13 @@ func main() {
 // Since GO does not allow unused variables, we use the "_" character to tell GO we don't care about the index, but
 // we want to get the actual user we're looping over to pass to the function.
 
-func GetDateFromTimeStamp(dtformat string) string {
-	form := "Jan 2, 2006 at 3:04 PM"
-	t2, _ := time.Parse(form, dtformat)
-	return t2.Format("20060102150405")
+func GetDateFromTimeStamp(dtformat float64) time.Time {
+	return time.Unix(int64(dtformat), 0)
+}
+
+func cleanTags(text string) string {
+	br := "<br />"
+	return strings.Replace(text, br, "\n", -1)
 }
 
 // "init" is a special function. GO will execute the init() function before the main.
@@ -231,13 +254,14 @@ func init() {
 	flag.StringVarP(&user, "user", "u", "", "Search Github Users")
 	flag.StringVarP(&repo, "repo", "r", "", "Search Github repos by User\n        Usage: cli -u [user name] -r 'y'\n")
 	flag.StringVarP(&movie, "movie", "m", "", "Search Movies")
-	flag.StringVarP(&genre, "genre", "g", "", "Search Movie by genre\n        Usage: cli -m [title] -g {not yet implemented}\n")
+	// flag.StringVarP(&genre, "genre", "g", "", "Search Movie by genre\n        Usage: cli -g {not yet implemented}\n")
 	flag.StringVarP(&news, "news", "n", "", "Search News by country ode (ex: fr, us)")
-	flag.StringVarP(&category, "category", "c", "", "Search News by category\n        Usage: cli -n [ISO 3166-1 alpha-2 country code] -c {not yet implemented}\n")
+	flag.StringVarP(&category, "category", "c", "", "Search News by category\n        Usage: cli -n [ISO 3166-1 alpha-2 country code] -c {one of:}\n        [business entertainment general health science sports technology]")
 	flag.StringVarP(&reddit, "reddit", "R", "", "Search Reddit posts by keyword")
 	flag.StringVarP(&com, "com", "C", "", "Search Reddit comments by postId\n        Usage: cli -R [reddit keyword] -C [postId]\n")
 	flag.StringVarP(&proj, "project", "p", "", "Create a Node.js micro-service by a name\n        Usage: cli -p [project name]\n        to use in terminal emulator under win env\n")
 	flag.StringVarP(&publi, "publi", "P", "", "Find scientific publications by search-word\n        Usage: cli -P [search term]\n")
+	flag.StringVarP(&osTool, "env", "e", "", "Display the env as key/val")
 
 	dir, _ := syscall.Getwd()
 	fmt.Println("dossier courant:", dir)

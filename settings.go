@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"os"
@@ -12,6 +13,19 @@ type Settings struct {
 	User struct {
 		Country  string
 		UserName string
+	}
+}
+
+func getUserSettingsProperty(s *Settings, property string) string {
+	switch property {
+	case "country":
+		return s.User.Country
+	case "name":
+		return s.User.UserName
+	case "user":
+		return s.User.UserName
+	default:
+		return "Unknown user setting!\n"
 	}
 }
 
@@ -35,7 +49,10 @@ func ReadSettingsFile() {
 	if file != nil {
 		dec := yaml.NewDecoder(file)
 		dec.Decode(&UserSettings)
-		fmt.Println("UserSettings", UserSettings)
+
+		out, err := json.Marshal(UserSettings)
+		check(err)
+		fmt.Println("\nUserSettings", string(out))
 	}
 }
 

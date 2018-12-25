@@ -65,14 +65,15 @@ func DisplayPublications(name string) {
 	fmt.Printf("Getting publications: %s\n", name)
 	dataset := getPublications(name)
 	for _, document := range dataset.Records {
+		fmt.Println()
+		fmt.Println(`*************************** Publication ***************************`)
 		fmt.Println(`Date:                `, document.Field.DateDePublication)
 		fmt.Println(`Auteurs:             `, document.Field.NomsDesAuteurs)
 		fmt.Println(`ReferenceHAL:        `, document.Field.ReferenceHAL)
 		fmt.Println(`Thematiques:         `, document.Field.Thematiques)
 		fmt.Println(`Titre:               `, document.Field.Titre)
-		fmt.Println(`Resume:              `, document.Field.Resume)
+		fmt.Println(`Resume:              `, cleanTags(document.Field.Resume))
 		fmt.Println(`Numero national de structure de recherche:         `, document.Field.NumeroNationalDeStructureDeRecherche)
 		fmt.Println(`References archives OAI:                           `, document.Field.ReferencesArchivesOAI)
-		fmt.Println(`*************************** Publication ***************************`)
 	}
 }
