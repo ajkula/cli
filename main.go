@@ -285,13 +285,13 @@ func (pr Folders) write(name string) {
 	cmd.Start()
 	cmd = exec.Command("cd", name)
 	cmd.Start()
+	cmd = exec.Command("mkdir", pr.models)
+	cmd.Start()
 	cmd = exec.Command("mkdir", pr.connectors)
 	cmd.Start()
 	cmd = exec.Command("mkdir", pr.controllers)
 	cmd.Start()
 	cmd = exec.Command("mkdir", pr.currentFolder)
-	cmd.Start()
-	cmd = exec.Command("mkdir", pr.models)
 	cmd.Start()
 
 	packageJson, err := os.Create(pr.currentFolder + filenames.packageJson)
@@ -340,15 +340,6 @@ func (pr Folders) write(name string) {
 	fmt.Println("wrote "+pr.currentFolder+filenames.serverFile, intToString(b)+" bytes")
 	srv.Flush()
 
-	abstractModelFile, err := os.Create(pr.models + filenames.abstractModelFile)
-	check(err)
-	defer abstractModelFile.Close()
-	abm := bufio.NewWriter(abstractModelFile)
-	b, err = abm.WriteString(createProject(name).abstractModelFile)
-	check(err)
-	fmt.Println("wrote "+pr.currentFolder+filenames.abstractModelFile, intToString(b)+" bytes")
-	abm.Flush()
-
 	storeMock, err := os.Create(pr.currentFolder + filenames.storeMock)
 	check(err)
 	defer storeMock.Close()
@@ -364,7 +355,7 @@ func (pr Folders) write(name string) {
 	ept := bufio.NewWriter(empty)
 	b, err = ept.WriteString(createProject(name).empty)
 	check(err)
-	fmt.Println("wrote "+pr.currentFolder+filenames.empty, intToString(b)+" bytes")
+	fmt.Println("wrote "+pr.connectors+filenames.empty, intToString(b)+" bytes")
 	ept.Flush()
 
 	abstractControllerFile, err := os.Create(pr.controllers + filenames.abstractControllerFile)
@@ -373,7 +364,7 @@ func (pr Folders) write(name string) {
 	abc := bufio.NewWriter(abstractControllerFile)
 	b, err = abc.WriteString(createProject(name).abstractControllerFile)
 	check(err)
-	fmt.Println("wrote "+pr.currentFolder+filenames.abstractControllerFile, intToString(b)+" bytes")
+	fmt.Println("wrote "+pr.controllers+filenames.abstractControllerFile, intToString(b)+" bytes")
 	abc.Flush()
 
 	healthControllerFile, err := os.Create(pr.controllers + filenames.healthControllerFile)
@@ -382,7 +373,7 @@ func (pr Folders) write(name string) {
 	hlc := bufio.NewWriter(healthControllerFile)
 	b, err = hlc.WriteString(createProject(name).healthControllerFile)
 	check(err)
-	fmt.Println("wrote "+pr.currentFolder+filenames.healthControllerFile, intToString(b)+" bytes")
+	fmt.Println("wrote "+pr.controllers+filenames.healthControllerFile, intToString(b)+" bytes")
 	hlc.Flush()
 
 	testControllerFile, err := os.Create(pr.controllers + filenames.testControllerFile)
@@ -391,8 +382,17 @@ func (pr Folders) write(name string) {
 	tst := bufio.NewWriter(testControllerFile)
 	b, err = tst.WriteString(createProject(name).testControllerFile)
 	check(err)
-	fmt.Println("wrote "+pr.currentFolder+filenames.testControllerFile, intToString(b)+" bytes")
+	fmt.Println("wrote "+pr.controllers+filenames.testControllerFile, intToString(b)+" bytes")
 	tst.Flush()
+
+	abstractModelFile, err := os.Create(pr.models + filenames.abstractModelFile)
+	check(err)
+	defer abstractModelFile.Close()
+	abm := bufio.NewWriter(abstractModelFile)
+	b, err = abm.WriteString(createProject(name).abstractModelFile)
+	check(err)
+	fmt.Println("wrote "+pr.models+filenames.abstractModelFile, intToString(b)+" bytes")
+	abm.Flush()
 
 	cmd = exec.Command("npm", "i")
 	cmd.Dir = name
