@@ -340,6 +340,15 @@ func (pr Folders) write(name string) {
 	fmt.Println("wrote "+pr.currentFolder+filenames.serverFile, intToString(b)+" bytes")
 	srv.Flush()
 
+	abstractModelFile, err := os.Create(pr.models + filenames.abstractModelFile)
+	check(err)
+	defer abstractModelFile.Close()
+	abm := bufio.NewWriter(abstractModelFile)
+	b, err = abm.WriteString(createProject(name).abstractModelFile)
+	check(err)
+	fmt.Println("wrote "+pr.currentFolder+filenames.abstractModelFile, intToString(b)+" bytes")
+	abm.Flush()
+
 	storeMock, err := os.Create(pr.currentFolder + filenames.storeMock)
 	check(err)
 	defer storeMock.Close()
