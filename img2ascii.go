@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"net/http"
+	"sync"
 
 	"github.com/nfnt/resize"
 
@@ -56,18 +57,40 @@ func Convert2Ascii(url string, width int) []byte {
 	}
 }
 
+// func ConvertImg2Ascii(img image.Image, w, h int) []byte {
+// 	table := []byte(ASCIISTR)
+// 	buf := new(bytes.Buffer)
+
+// 	for i := 0; i < h; i++ {
+// 		for j := 0; j < w; j++ {
+// 			g := color.GrayModel.Convert(img.At(j, i))
+// 			y := reflect.ValueOf(g).FieldByName("Y").Uint()
+// 			pos := int(y * 16 / 255)
+// 			_ = buf.WriteByte(table[pos])
+// 		}
+// 		_ = buf.WriteByte('\n')
+// 	}
+// 	return buf.Bytes()
+// }
+
 func ConvertImg2Ascii(img image.Image, w, h int) []byte {
 	table := []byte(ASCIISTR)
 	buf := new(bytes.Buffer)
 
 	for i := 0; i < h; i++ {
-		for j := 0; j < w; j++ {
-			g := color.GrayModel.Convert(img.At(j, i))
-			y := reflect.ValueOf(g).FieldByName("Y").Uint()
-			pos := int(y * 16 / 255)
-			_ = buf.WriteByte(table[pos])
-		}
-		_ = buf.WriteByte('\n')
+		var wg sync.WaitGroup
+		wg.Add(1)
+		func() {
+			for j := 0; j < w; j++ {
+				g := color.GrayModel.Convert(img.At(j, i))
+				y := reflect.ValueOf(g).FieldByName("Y").Uint()
+				pos := int(y * 16 / 255)
+				_ = buf.WriteByte(table[pos])
+			}
+			_ = buf.WriteByte('\n')
+			wg.Done()
+		}()
+		wg.Wait()
 	}
 	return buf.Bytes()
 }

@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"sync"
 )
 
 // constants
@@ -63,19 +64,25 @@ func getNews(name, category string) Articles {
 func DisplayNews(news, category string) {
 	fmt.Printf("Getting %s news: %s\n", category, news)
 	results := getNews(news, category)
+	var wg sync.WaitGroup
 	for _, res := range results.Articles {
-		fmt.Println("**********************************************************")
-		fmt.Println(`Source:             `, res.Source.Name)
-		fmt.Println(`Publishing date:    `, res.PublishedAt)
-		fmt.Println(`Title:              `, res.Title)
-		// fmt.Println(`Description:        `, res.Description)
-		fmt.Println(`Content:            `, res.Content)
-		fmt.Println(`Url:                `, res.Url)
-		// fmt.Println(`UrlToImage:         `, res.UrlToImage)
-		fmt.Println()
-		if res.UrlToImage != "" {
-			asciiArt := Convert2Ascii(res.UrlToImage, 80)
-			fmt.Println(string(asciiArt))
-		}
+		wg.Add(1)
+		go func() {
+			fmt.Println("**********************************************************")
+			fmt.Println(`Source:             `, res.Source.Name)
+			fmt.Println(`Publishing date:    `, res.PublishedAt)
+			fmt.Println(`Title:              `, res.Title)
+			// fmt.Println(`Description:        `, res.Description)
+			fmt.Println(`Content:            `, res.Content)
+			fmt.Println(`Url:                `, res.Url)
+			// fmt.Println(`UrlToImage:         `, res.UrlToImage)
+			fmt.Println()
+			if res.UrlToImage != "" {
+				asciiArt := Convert2Ascii(res.UrlToImage, 80)
+				fmt.Println(string(asciiArt))
+			}
+			wg.Done()
+		}()
+		wg.Wait()
 	}
 }
