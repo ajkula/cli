@@ -217,11 +217,7 @@ func main() {
 
 	// if multiple users are passed separated by commas, store them in a "users" array
 	if news != "" {
-		if category != "" {
-			DisplayNewsByCategory(news, category)
-		} else {
-			DisplayNews(news)
-		}
+			DisplayNews(news, category)
 	}
 
 	if city != "" {

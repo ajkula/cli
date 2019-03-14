@@ -60,29 +60,9 @@ func getNews(name, category string) Articles {
 	return news
 }
 
-func DisplayNewsByCategory(news, category string) {
+func DisplayNews(news, category string) {
 	fmt.Printf("Getting %s news: %s\n", category, news)
 	results := getNews(news, category)
-	for _, res := range results.Articles {
-		fmt.Println("**********************************************************")
-		fmt.Println(`Source:             `, res.Source.Name)
-		fmt.Println(`Publishing date:    `, res.PublishedAt)
-		fmt.Println(`Title:              `, res.Title)
-		// fmt.Println(`Description:        `, res.Description)
-		fmt.Println(`Content:            `, res.Content)
-		fmt.Println(`Url:                `, res.Url)
-		// fmt.Println(`UrlToImage:         `, res.UrlToImage)
-		fmt.Println()
-		if res.UrlToImage != "" {
-			asciiArt := Convert2Ascii(res.UrlToImage, 80)
-			fmt.Println(string(asciiArt))
-		}
-	}
-}
-
-func DisplayNews(name string) {
-	fmt.Printf("Getting news: %s\n", news)
-	results := getNews(news, "")
 	for _, res := range results.Articles {
 		fmt.Println("**********************************************************")
 		fmt.Println(`Source:             `, res.Source.Name)
