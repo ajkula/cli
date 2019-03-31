@@ -46,6 +46,9 @@ type Filenames struct {
 
 // flags
 var (
+	x         string
+	ip        string
+	netw      string
 	city      string
 	user      string
 	publi     string
@@ -91,6 +94,8 @@ func main() {
 	}
 
 	ReadSettingsFile()
+	listLocalAddresses(netw, ip)
+
 	if proj != "" {
 		proj := cleanQuotes(proj)
 		folders.currentFolder = "." + dir + "/" + proj + "/"
@@ -217,7 +222,7 @@ func main() {
 
 	// if multiple users are passed separated by commas, store them in a "users" array
 	if news != "" {
-			DisplayNews(news, category)
+		DisplayNews(news, category, x)
 	}
 
 	if city != "" {
@@ -258,6 +263,9 @@ func init() {
 	flag.StringVarP(&proj, "project", "p", "", "Create a Node.js micro-service by a name\n        Usage: cli -p [project name]\n        to use in terminal emulator under win env\n")
 	flag.StringVarP(&publi, "publi", "P", "", "Find scientific publications by search-word\n        Usage: cli -P [search term]\n")
 	flag.StringVarP(&osTool, "env", "e", "", "Display the env as key/val")
+	flag.StringVarP(&x, "x", "x", "", "Width in chars of displayed ascii images")
+	flag.StringVarP(&netw, "net", "N", "", "List local Network available adresses")
+	flag.StringVarP(&ip, "ip", "i", "", "Remote Network details")
 
 	dir, _ := syscall.Getwd()
 	fmt.Println("dossier courant:", dir)

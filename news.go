@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"strconv"
 	"sync"
 )
 
@@ -61,9 +62,20 @@ func getNews(name, category string) Articles {
 	return news
 }
 
-func DisplayNews(news, category string) {
+func DisplayNews(news, category, x string) {
 	fmt.Printf("Getting %s news: %s\n", category, news)
 	results := getNews(news, category)
+
+	var size int
+	var err error
+	if x != "" {
+		if size, err = strconv.Atoi(x); err != nil {
+			check(err)
+		}
+	} else {
+		size = 80
+	}
+
 	var wg sync.WaitGroup
 	for _, res := range results.Articles {
 		wg.Add(1)
@@ -78,7 +90,7 @@ func DisplayNews(news, category string) {
 			// fmt.Println(`UrlToImage:         `, res.UrlToImage)
 			fmt.Println()
 			if res.UrlToImage != "" {
-				asciiArt := Convert2Ascii(res.UrlToImage, 80)
+				asciiArt := Convert2Ascii(res.UrlToImage, size)
 				fmt.Println(string(asciiArt))
 			}
 			wg.Done()
