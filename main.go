@@ -93,7 +93,7 @@ func main() {
 		ListOSTools()
 	}
 
-	ReadSettingsFile()
+	// ReadSettingsFile()
 	listLocalAddresses(netw, ip)
 
 	if proj != "" {
