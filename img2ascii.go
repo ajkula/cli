@@ -3,6 +3,8 @@ package main
 import (
 	"fmt"
 	"net/http"
+	"os"
+	"strconv"
 	"sync"
 
 	"github.com/nfnt/resize"
@@ -48,13 +50,42 @@ func ScaleImage(img image.Image, w int) (image.Image, int, int) {
 	return img, w, h
 }
 
-// Convert2Ascii(ScaleImage(fromUrlAndSize(res.UrlToImage, 80)))
 func Convert2Ascii(url string, width int) []byte {
 	if img, width, err := fromUrlAndSize(url, width); err == nil {
 		return ConvertImg2Ascii(ScaleImage(img, width))
-	} else {
+	}
+	return []byte{}
+}
+
+func ReadImgFile(uri string, width string) []byte {
+	size := 80
+	var err error
+
+	if uri == "" {
 		return []byte{}
 	}
+	if width != "" {
+		if size, err = strconv.Atoi(width); err != nil {
+			check(err)
+		}
+	}
+
+	reader, err := os.Open(uri)
+	check(err)
+	defer reader.Close()
+	// if img, _, err := image.Decode(reader); err != nil {
+	img, _, err := image.Decode(reader)
+	// return ConvertImg2Ascii(ScaleImage(img, size))
+	// } else {
+	check(err)
+	return ConvertImg2Ascii(ScaleImage(img, size))
+	// }
+	// return []byte{}
+}
+
+func DisplayAsciiFromLocalFile(uri string, size string) {
+	asciiArt := ReadImgFile(uri, size)
+	fmt.Println(string(asciiArt))
 }
 
 // func ConvertImg2Ascii(img image.Image, w, h int) []byte {
@@ -94,8 +125,3 @@ func ConvertImg2Ascii(img image.Image, w, h int) []byte {
 	}
 	return buf.Bytes()
 }
-
-// func main() {
-//     p := Convert2Ascii(ScaleImage(Init()))
-//     fmt.Print(string(p))
-// }

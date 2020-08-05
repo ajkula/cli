@@ -48,6 +48,7 @@ type Filenames struct {
 var (
 	x         string
 	ip        string
+	img       string
 	netw      string
 	city      string
 	user      string
@@ -225,6 +226,10 @@ func main() {
 		DisplayNews(news, category, x)
 	}
 
+	if img != "" {
+		DisplayAsciiFromLocalFile(img, x)
+	}
+
 	if city != "" {
 		city = cleanQuotes(city)
 		DisplayWeather(city)
@@ -266,6 +271,7 @@ func init() {
 	flag.StringVarP(&x, "x", "x", "", "Width in chars of displayed ascii images")
 	flag.StringVarP(&netw, "net", "N", "", "List local Network available adresses")
 	flag.StringVarP(&ip, "ip", "i", "", "Remote Network details")
+	flag.StringVarP(&img, "ascii", "a", "", "Display ascii art from local images")
 
 	dir, _ := syscall.Getwd()
 	fmt.Println("dossier courant:", dir)
