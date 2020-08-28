@@ -73,14 +73,9 @@ func ReadImgFile(uri string, width string) []byte {
 	reader, err := os.Open(uri)
 	check(err)
 	defer reader.Close()
-	// if img, _, err := image.Decode(reader); err != nil {
 	img, _, err := image.Decode(reader)
-	// return ConvertImg2Ascii(ScaleImage(img, size))
-	// } else {
 	check(err)
 	return ConvertImg2Ascii(ScaleImage(img, size))
-	// }
-	// return []byte{}
 }
 
 func DisplayAsciiFromLocalFile(uri string, size string) {
@@ -95,7 +90,7 @@ func DisplayAsciiFromLocalFile(uri string, size string) {
 // 	for i := 0; i < h; i++ {
 // 		for j := 0; j < w; j++ {
 // 			g := color.GrayModel.Convert(img.At(j, i))
-// 			y := reflect.ValueOf(g).FieldByName("Y").Uint()
+//      y := reflect.ValueOf(g).FieldByName("Y").Uint()
 // 			pos := int(y * 16 / 255)
 // 			_ = buf.WriteByte(table[pos])
 // 		}

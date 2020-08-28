@@ -6,7 +6,6 @@ import (
 	"io/ioutil"
 	"net/http"
 	"strconv"
-	"sync"
 )
 
 // constants
@@ -52,13 +51,10 @@ func getNews(name, category string) Articles {
 	// read the response body and handle any errors during reading.
 	body, err := ioutil.ReadAll(resp.Body)
 	check(err)
-	// fmt.Println(string(body))
 
 	// create a user variable of type "User" struct to store the "Unmarshal"-ed (aka parsed JSON) data, then return the user
 	var news Articles
 	json.Unmarshal(body, &news)
-	// json.Unmarshal(&news.Articles, &news.Articles)
-	// fmt.Println(news.Articles)
 	return news
 }
 
@@ -76,25 +72,35 @@ func DisplayNews(news, category, x string) {
 		size = 80
 	}
 
-	var wg sync.WaitGroup
 	for _, res := range results.Articles {
-		wg.Add(1)
+		res := res
+		ch := make(chan string)
 		go func() {
-			fmt.Println("**********************************************************")
-			fmt.Println(`Source:             `, res.Source.Name)
-			fmt.Println(`Publishing date:    `, res.PublishedAt)
-			fmt.Println(`Title:              `, res.Title)
+			concat := ""
+			concat += makeLines("**********************************************************")
+			concat += makeLines(`Source:             `, res.Source.Name)
+			concat += makeLines(`Publishing date:    `, res.PublishedAt)
+			concat += makeLines(`Title:              `, res.Title)
 			// fmt.Println(`Description:        `, res.Description)
-			fmt.Println(`Content:            `, res.Content)
-			fmt.Println(`Url:                `, res.Url)
+			concat += makeLines(`Content:            `, res.Content)
+			concat += makeLines(`Url:                `, res.Url)
 			// fmt.Println(`UrlToImage:         `, res.UrlToImage)
-			fmt.Println()
+			concat += makeLines("")
 			if res.UrlToImage != "" {
-				asciiArt := Convert2Ascii(res.UrlToImage, size)
-				fmt.Println(string(asciiArt))
+				// asciiArt := Convert2Ascii(res.UrlToImage, size)
+				concat += string(Convert2Ascii(res.UrlToImage, size))
 			}
-			wg.Done()
+			ch <- concat
 		}()
-		wg.Wait()
+
+		select {
+		case str := <-ch:
+			fmt.Println(str)
+		}
 	}
+}
+
+func makeLines(str ...interface{}) string {
+	s := fmt.Sprint(str...)
+	return s + "\n"
 }
