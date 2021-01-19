@@ -261,7 +261,7 @@ func init() {
 	flag.StringVarP(&repo, "repo", "r", "", "Search Github repos by User\n        Usage: cli -u [user name] -r 'y'\n")
 	flag.StringVarP(&movie, "movie", "m", "", "Search Movies")
 	// flag.StringVarP(&genre, "genre", "g", "", "Search Movie by genre\n        Usage: cli -g {not yet implemented}\n")
-	flag.StringVarP(&news, "news", "n", "", "Search News by country ode (ex: fr, us)")
+	flag.StringVarP(&news, "news", "n", "", "Search News by country code (ex: fr, us)")
 	flag.StringVarP(&category, "category", "c", "", "Search News by category\n        Usage: cli -n [ISO 3166-1 alpha-2 country code] -c {one of:}\n        [business entertainment general health science sports technology]")
 	flag.StringVarP(&reddit, "reddit", "R", "", "Search Reddit posts by keyword")
 	flag.StringVarP(&com, "com", "C", "", "Search Reddit comments by postId\n        Usage: cli -R [reddit keyword] -C [postId]\n")
