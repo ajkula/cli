@@ -11,7 +11,7 @@ import (
 
 // constants
 const (
-	githugApiURL = "https://api.github.com"
+	githugAPIURL = "https://api.github.com"
 	userEndpoint = "/users/"
 	toRepos      = "/repos"
 )
@@ -52,10 +52,11 @@ type User struct {
 	Stats             StatsGithub `json:"stats,omitempty"`
 }
 
+// Repo struct represents the JSON data
 type Repo struct {
 	Name        string `json:"name"`
 	Private     bool   `json:"private"`
-	Html_url    string `json:"html_url"`
+	HTMLURL     string `json:"html_url"`
 	Description string `json:"description"`
 	CreatedAt   string `json:"created_at"`
 	UpdatedAt   string `json:"updated_at"`
@@ -65,20 +66,22 @@ type Repo struct {
 	// Open_issues_count int    `json:"open_issues_count"`
 	// Forks             int    `json:"forks"`
 	// Watchers          int    `json:"watchers"`
-	Default_branch string `json:"default_branch"`
-	Id             int    `json:"id"`
+	DefaultBranch string `json:"default_branch"`
+	ID            int    `json:"id"`
 }
 
+// Repos struct
 type Repos struct {
 	Repos []Repo
 }
 
+// StatsGithub map data
 type StatsGithub map[string]int
 
 // getUsers queries GitHub API for a given user
 func getUsers(name string) User {
 	// send GET request to GitHub API with the requested user "name"
-	resp, err := http.Get(githugApiURL + userEndpoint + name)
+	resp, err := http.Get(githugAPIURL + userEndpoint + name)
 	// if err occurs during GET request, then throw error and quit application
 	check(err)
 
@@ -101,7 +104,7 @@ func getUsers(name string) User {
 		if result.Language == "" {
 			result.Language = "unknown"
 		}
-		user.Stats[result.Language] += 1
+		user.Stats[result.Language]++
 	}
 	for i, agg := range user.Stats {
 		user.Stats[i] = agg * 100 / total
@@ -112,7 +115,7 @@ func getUsers(name string) User {
 // getRepos queries GitHub API for a given user repositories
 func getRepos(name string) Repos {
 	// send GET request to GitHub API with the requested user "name"
-	resp, err := http.Get(githugApiURL + userEndpoint + name + toRepos)
+	resp, err := http.Get(githugAPIURL + userEndpoint + name + toRepos)
 	// if err occurs during GET request, then throw error and quit application
 	check(err)
 

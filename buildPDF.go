@@ -2,6 +2,7 @@ package main
 
 import "github.com/jung-kurt/gofpdf"
 
+// PDFDoc struct data
 type PDFDoc struct {
 	document     *gofpdf.Fpdf
 	encodingFunc func(string) string
@@ -9,6 +10,7 @@ type PDFDoc struct {
 
 var fontPtSize float64 = 12
 
+// NewPdfDoc function displays results
 func NewPdfDoc() *PDFDoc {
 	pdf := gofpdf.New("P", "mm", "A4", "./assets/fonts")
 	// html := pdf.HTMLBasicNew()
@@ -51,4 +53,4 @@ func NewPdfDoc() *PDFDoc {
 
 // url := "https://cdn.recast.ai/newsletter/city-01.png"
 // httpimg.Register(pdf, url, "")
-// pdf.Image(url, 15, 15, 267, 0, false, "", 0, "") 
+// pdf.Image(url, 15, 15, 267, 0, false, "", 0, "")

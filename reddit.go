@@ -11,15 +11,14 @@ import (
 
 // constants
 const (
-	redditApiURL     = "https://www.reddit.com"
+	redditAPIURL     = "https://www.reddit.com"
 	postsEndPoint    = "/r/"
 	commentsEndPoint = "/comments/"
 	limit            = "/.json?limit=10"
 	UserAgent        = "script:reddit.reader:v0.14 (by /u/Ptk7l2)"
 )
 
-// User struct represents the JSON data from GitHub API: https://api.github.com/users/defunct
-// This struct was generated via a JSON-to-GO utility by Matt Holt: https://mholt.github.io/json-to-go/
+// Post struct represents the JSON data
 type Post struct {
 	Data struct {
 		Selftext   string  `json:"Selftext"`
@@ -29,6 +28,7 @@ type Post struct {
 	} `json:"data"`
 }
 
+// Comment struct represents the JSON data
 type Comment struct {
 	Data struct {
 		Selftext   string  `json:"Selftext"`
@@ -39,12 +39,14 @@ type Comment struct {
 	} `json:"data"`
 }
 
+// Posts struct represents the JSON data
 type Posts struct {
 	Data struct {
 		Children []Post `json:"children"`
 	} `json:"data"`
 }
 
+// Comments struct represents the JSON data
 type Comments struct {
 	Data struct {
 		Children []Comment `json:"children"`
@@ -53,8 +55,8 @@ type Comments struct {
 
 // getUsers queries GitHub API for a given user
 func getRedditPosts(name string) Posts {
-	fmt.Println(redditApiURL + postsEndPoint + name + limit)
-	url := redditApiURL + postsEndPoint + name + limit
+	fmt.Println(redditAPIURL + postsEndPoint + name + limit)
+	url := redditAPIURL + postsEndPoint + name + limit
 	// send GET request to GitHub API with the requested user "name"
 	req, err := http.NewRequest("GET", url, nil)
 	// if err occurs during GET request, then throw error and quit application
@@ -83,7 +85,7 @@ func getRedditPosts(name string) Posts {
 // getUsers queries GitHub API for a given user
 func getRedditComments(name string) []Comments {
 	// send GET request to GitHub API with the requested user "name"
-	url := redditApiURL + commentsEndPoint + name + limit
+	url := redditAPIURL + commentsEndPoint + name + limit
 	req, err := http.NewRequest("GET", url, nil)
 	// if err occurs during GET request, then throw error and quit application
 	check(err)

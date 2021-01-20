@@ -7,6 +7,7 @@ import (
 	"os/exec"
 )
 
+// Project struct data
 type Project struct {
 	serverFile             string
 	indexFile              string
@@ -14,7 +15,7 @@ type Project struct {
 	testControllerFile     string
 	healthControllerFile   string
 	abstractControllerFile string
-	packageJson            string
+	packageJSON            string
 	storeMock              string
 	readme                 string
 	gitignore              string
@@ -172,7 +173,7 @@ app.listen(port, function () {
 		}
 	}
 	`
-	project.packageJson = `
+	project.packageJSON = `
 	{
 		"name": "` + name + `",
 		"version": "1.0.0",

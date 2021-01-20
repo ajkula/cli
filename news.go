@@ -13,21 +13,24 @@ const (
 	newsURL = "https://newsapi.org/v2/top-headlines?apiKey=f99aa135983b46be95358b8d9da1018e"
 )
 
+// News struct represents the JSON data
 type News struct {
 	Title       string `json:"title"`
 	Description string `json:"description"`
-	Url         string `json:"url"`
-	UrlToImage  string `json:"urlToImage"`
+	URL         string `json:"url"`
+	URLToImage  string `json:"urlToImage"`
 	PublishedAt string `json:"publishedAt"`
 	Content     string `json:"content"`
 	Source      Source `json:"source"`
 }
 
+// Source struct represents the JSON data
 type Source struct {
 	ID   string `json:"id"`
 	Name string `json:"name"`
 }
 
+// Articles struct represents an array of news
 type Articles struct {
 	Status       string
 	TotalResults int
@@ -58,6 +61,7 @@ func getNews(name, category string) Articles {
 	return news
 }
 
+// DisplayNews function displays news from country code, category, img size in col number
 func DisplayNews(news, category, x string) {
 	fmt.Printf("Getting %s news: %s\n", category, news)
 	results := getNews(news, category)
@@ -83,12 +87,12 @@ func DisplayNews(news, category, x string) {
 			concat += makeLines(`Title:              `, res.Title)
 			// fmt.Println(`Description:        `, res.Description)
 			concat += makeLines(`Content:            `, res.Content)
-			concat += makeLines(`Url:                `, res.Url)
-			// fmt.Println(`UrlToImage:         `, res.UrlToImage)
+			concat += makeLines(`URL:                `, res.URL)
+			// fmt.Println(`URLToImage:         `, res.URLToImage)
 			concat += makeLines("")
-			if res.UrlToImage != "" {
-				// asciiArt := Convert2Ascii(res.UrlToImage, size)
-				concat += string(Convert2Ascii(res.UrlToImage, size))
+			if res.URLToImage != "" {
+				// asciiArt := Convert2Ascii(res.URLToImage, size)
+				concat += string(Convert2Ascii(res.URLToImage, size))
 			}
 			ch <- concat
 		}()

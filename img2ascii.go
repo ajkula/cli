@@ -18,6 +18,7 @@ import (
 	"reflect"
 )
 
+// ASCIISTR string contains all the runes to construct ASCII img
 var ASCIISTR = "MND8OZ$7I?+=~:,.."
 
 func byPassErrors(e error) error {
@@ -28,7 +29,7 @@ func byPassErrors(e error) error {
 	return nil
 }
 
-func fromUrlAndSize(url string, width int) (image.Image, int, error) {
+func fromURLAndSize(url string, width int) (image.Image, int, error) {
 	res, err := http.Get(url)
 	if byPassErrors(err) != nil {
 		return nil, 0, err
@@ -43,6 +44,7 @@ func fromUrlAndSize(url string, width int) (image.Image, int, error) {
 	return img, width, nil
 }
 
+// ScaleImage function returns img, width value, height value from image and targeted console col number
 func ScaleImage(img image.Image, w int) (image.Image, int, int) {
 	sz := img.Bounds()
 	h := (sz.Max.Y * w * 10) / (sz.Max.X * 16)
@@ -50,13 +52,15 @@ func ScaleImage(img image.Image, w int) (image.Image, int, int) {
 	return img, w, h
 }
 
+// Convert2Ascii function returns []byte from img URL and col number
 func Convert2Ascii(url string, width int) []byte {
-	if img, width, err := fromUrlAndSize(url, width); err == nil {
+	if img, width, err := fromURLAndSize(url, width); err == nil {
 		return ConvertImg2Ascii(ScaleImage(img, width))
 	}
 	return []byte{}
 }
 
+// ReadImgFile function returns []byte from img URI and col number
 func ReadImgFile(uri string, width string) []byte {
 	size := 80
 	var err error
@@ -78,7 +82,8 @@ func ReadImgFile(uri string, width string) []byte {
 	return ConvertImg2Ascii(ScaleImage(img, size))
 }
 
-func DisplayAsciiFromLocalFile(uri string, size string) {
+// DisplayASCIIFromLocalFile function prints the target img with the col number given
+func DisplayASCIIFromLocalFile(uri string, size string) {
 	asciiArt := ReadImgFile(uri, size)
 	fmt.Println(string(asciiArt))
 }
@@ -99,6 +104,7 @@ func DisplayAsciiFromLocalFile(uri string, size string) {
 // 	return buf.Bytes()
 // }
 
+// ConvertImg2Ascii function returns []byte from img
 func ConvertImg2Ascii(img image.Image, w, h int) []byte {
 	table := []byte(ASCIISTR)
 	buf := new(bytes.Buffer)

@@ -29,8 +29,8 @@ type corp struct {
 	Temp     float32
 	Pressure int
 	Humidity int
-	Temp_min float32
-	Temp_max float32
+	TempMin  float32
+	TempMax  float32
 }
 
 type wind struct {
@@ -49,6 +49,7 @@ type sys struct {
 	Sunset  int64
 }
 
+// MeteoCityNow struct represents the weather result
 type MeteoCityNow struct {
 	Coord      coord
 	Weather    []weather
@@ -89,6 +90,7 @@ func getMeteoByCity(name string) MeteoCityNow {
 	return meteo
 }
 
+// DisplayWeather function displays the weather cast for a given city name
 func DisplayWeather(city string) {
 	fmt.Printf("Getting weather: %s\n", city)
 	results := getMeteoByCity(city)

@@ -23,6 +23,7 @@ func check(e error) {
 	}
 }
 
+// Folders struct
 type Folders struct {
 	currentFolder string
 	controllers   string
@@ -30,6 +31,7 @@ type Folders struct {
 	models        string
 }
 
+// Filenames struct
 type Filenames struct {
 	serverFile             string
 	indexFile              string
@@ -37,7 +39,7 @@ type Filenames struct {
 	testControllerFile     string
 	healthControllerFile   string
 	abstractControllerFile string
-	packageJson            string
+	packageJSON            string
 	storeMock              string
 	readme                 string
 	gitignore              string
@@ -109,7 +111,7 @@ func main() {
 		filenames.abstractControllerFile = "Abstract.js"
 		filenames.healthControllerFile = "HealthController.js"
 		filenames.indexFile = "index.js"
-		filenames.packageJson = "package.json"
+		filenames.packageJSON = "package.json"
 		filenames.readme = "README.md"
 		filenames.serverFile = "Server.js"
 		filenames.storeMock = "store-mock.json"
@@ -178,7 +180,7 @@ func main() {
 				fmt.Println("****************************************************")
 				fmt.Println(`Name:              `, result.Name)
 				fmt.Println(`Private:           `, result.Private)
-				// fmt.Println(`Html_url:          `, result.Html_url)
+				// fmt.Println(`HTMLURL:          `, result.HTMLURL)
 				fmt.Println(`Description:       `, result.Description)
 				// fmt.Println(`Created_at:        `, result.CreatedAt)
 				fmt.Println(`Updated_at:        `, result.UpdatedAt)
@@ -188,8 +190,8 @@ func main() {
 				// fmt.Println(`Open_issues_count: `, result.Open_issues_count)
 				// fmt.Println(`Forks:             `, result.Forks)
 				// fmt.Println(`Watchers:          `, result.Watchers)
-				// fmt.Println(`Default_branch:    `, result.Default_branch)
-				fmt.Println(`ID:                `, result.Id)
+				// fmt.Println(`DefaultBranch:    `, result.DefaultBranch)
+				fmt.Println(`ID:                `, result.ID)
 			}
 		} else {
 			fmt.Printf("Searching user(s): %s\n", users)
@@ -227,7 +229,7 @@ func main() {
 	}
 
 	if img != "" {
-		DisplayAsciiFromLocalFile(img, x)
+		DisplayASCIIFromLocalFile(img, x)
 	}
 
 	if city != "" {
@@ -242,6 +244,7 @@ func main() {
 // Since GO does not allow unused variables, we use the "_" character to tell GO we don't care about the index, but
 // we want to get the actual user we're looping over to pass to the function.
 
+// GetDateFromTimeStamp function returns time struct from float64 data
 func GetDateFromTimeStamp(dtformat float64) time.Time {
 	return time.Unix(int64(dtformat), 0)
 }
@@ -304,14 +307,14 @@ func (pr Folders) write(name string) {
 	cmd = exec.Command("mkdir", pr.currentFolder)
 	cmd.Start()
 
-	packageJson, err := os.Create(pr.currentFolder + filenames.packageJson)
-	fmt.Println("os create:", pr.currentFolder+filenames.packageJson)
+	packageJSON, err := os.Create(pr.currentFolder + filenames.packageJSON)
+	fmt.Println("os create:", pr.currentFolder+filenames.packageJSON)
 	check(err)
-	defer packageJson.Close()
-	pjs := bufio.NewWriter(packageJson)
-	b, err := pjs.WriteString(createProject(name).packageJson)
+	defer packageJSON.Close()
+	pjs := bufio.NewWriter(packageJSON)
+	b, err := pjs.WriteString(createProject(name).packageJSON)
 	check(err)
-	fmt.Println("wrote "+pr.currentFolder+filenames.packageJson, intToString(b)+" bytes")
+	fmt.Println("wrote "+pr.currentFolder+filenames.packageJSON, intToString(b)+" bytes")
 	pjs.Flush()
 
 	indexFile, err := os.Create(pr.currentFolder + filenames.indexFile)

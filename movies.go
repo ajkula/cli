@@ -10,12 +10,11 @@ import (
 
 // constants
 const (
-	imdbApiURL = "http://www.omdbapi.com/?apikey=9c7cec43"
+	imdbAPIURL = "http://www.omdbapi.com/?apikey=9c7cec43"
 	plot       = "&plot=full"
 )
 
-// User struct represents the JSON data from GitHub API: https://api.github.com/users/defunct
-// This struct was generated via a JSON-to-GO utility by Matt Holt: https://mholt.github.io/json-to-go/
+// Movie struct represents the JSON data
 type Movie struct {
 	Title      string `json:"Title"`
 	Year       string `json:"Year"`
@@ -41,7 +40,7 @@ type Movie struct {
 // getUsers queries GitHub API for a given user
 func getMovie(name string) Movie {
 	// send GET request to GitHub API with the requested user "name"
-	resp, err := http.Get(imdbApiURL + "&t=" + name + plot)
+	resp, err := http.Get(imdbAPIURL + "&t=" + name + plot)
 	// if err occurs during GET request, then throw error and quit application
 	check(err)
 
@@ -71,6 +70,7 @@ func cleanQuotes(s string) string {
 	return result
 }
 
+// DisplayMoviesByName function displays movie infos from name
 func DisplayMoviesByName(name string) {
 	movies := strings.Split(cleanQuotes(movie), ",")
 	fmt.Printf("Searching movie(s): %s\n", strings.Split(movie, ","))

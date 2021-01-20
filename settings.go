@@ -9,6 +9,7 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
+// Settings struct represents the JSON data
 type Settings struct {
 	User struct {
 		Country  string
@@ -40,6 +41,7 @@ func noFileError(err error, UserSettings *Settings) {
 	}
 }
 
+// ReadSettingsFile function is a todo method to read/write user settings
 func ReadSettingsFile() {
 	var UserSettings Settings
 	file, err := os.Open("./settings.yml")

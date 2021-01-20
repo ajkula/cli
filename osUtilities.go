@@ -6,6 +6,7 @@ import (
 	"os"
 )
 
+// ListOSTools function to print results
 func ListOSTools() {
 	fmt.Println()
 	fmt.Println("**************** env ****************")

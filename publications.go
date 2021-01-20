@@ -11,11 +11,13 @@ const (
 	baseURL = "https://data.enseignementsup-recherche.gouv.fr/api/records/1.0/search/?dataset=fr-esr-scanr-publications-scientifiques&q=plasma&facet=type_de_publication&facet=numero_national_de_structure_de_recherche&facet=date_de_publication&facet=type_de_la_source&q="
 )
 
+// Dataset struct represents the JSON data
 type Dataset struct {
 	NHits   int        `json:"nhits"`
 	Records []Document `json:"records"`
 }
 
+// Document struct represents the JSON data
 type Document struct {
 	DatasetID       string `json:"datasetid"`
 	RecordID        string `json:"recordid"`
@@ -23,6 +25,7 @@ type Document struct {
 	Field           Fields `json:"fields"`
 }
 
+// Fields struct represents the JSON data
 type Fields struct {
 	TypeDePublication                    string `json:"type_de_publication"`
 	Thematiques                          string `json:"thematiques"`
@@ -56,14 +59,19 @@ func getPublications(name string) Dataset {
 	return dataset
 }
 
+// Publications struct data
 type Publications interface {
 	getPublications(name string) Dataset
 }
 
+// DisplayPublications function to print results
 func DisplayPublications(name string) {
 	name = cleanQuotes(name)
 	fmt.Printf("Getting publications: %s\n", name)
 	dataset := getPublications(name)
+	if dataset.NHits == 0 {
+		fmt.Println(`Documents found:     `, fmt.Sprint(dataset.NHits))
+	}
 	for _, document := range dataset.Records {
 		fmt.Println()
 		fmt.Println(`*************************** Publication ***************************`)
