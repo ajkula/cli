@@ -1,9 +1,16 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"net"
+	"os/exec"
+	"strconv"
 	"strings"
+	"sync"
+	"time"
+
+	"golang.org/x/sync/semaphore"
 )
 
 func getLocalAddrs() ([]net.IPNet, error) {
@@ -23,7 +30,7 @@ func getLocalAddrs() ([]net.IPNet, error) {
 }
 
 func listLocalAddresses(netw, ip string) {
-	proto := "tcp"
+	// proto := "tcp"
 
 	// for stat, i := range result.Stats {
 	// 	x := strings.Repeat(" ", 29-len(stat+strconv.Itoa(i)))
@@ -42,107 +49,80 @@ func listLocalAddresses(netw, ip string) {
 	if ip != "" {
 		fmt.Println("\n**********************************************************")
 		fmt.Println(" Remote Network details: \n")
-
-		localAddress, err := net.ResolveTCPAddr(proto, ip)
-		check(err)
-		// for k, v := range list {
-		fmt.Printf("      %v %v %v\n", localAddress, localAddress.Network(), localAddress.String)
-		// }
+		ps := &PortScanner{
+			ip: func(ip string) string {
+				if ip != "" {
+					return ip
+				} else {
+					return "127.0.0.1"
+				}
+			}(ip),
+			lock: semaphore.NewWeighted(1024),
+		}
+		ps.Start(1, 65535, 500*time.Millisecond)
 	}
 }
 
-// func fwd(src net.Conn, remote string, proto string) {
-// 	dst, err := net.Dial(proto, remote)
-// 	errHandler(err)
-// 	go func() {
-// 		_, err = io.Copy(src, dst)
-// 		errPrinter(err)
-// 	}()
-// 	go func() {
-// 		_, err = io.Copy(dst, src)
-// 		errPrinter(err)
-// 	}()
-// }
+// *************************************************************************
 
-// func errHandler(err error) {
-// 	if err != nil {
-// 		fmt.Fprintf(os.Stderr, "[Error] %s\n", err.Error())
-// 		os.Exit(1)
+type PortScanner struct {
+	ip   string
+	lock *semaphore.Weighted
+}
+
+func Ulimit() int64 {
+	out, err := exec.Command("ulimit", "-n").Output()
+	if err != nil {
+		panic(err)
+	}
+
+	s := strings.TrimSpace(string(out))
+
+	i, err := strconv.ParseInt(s, 10, 64)
+	if err != nil {
+		panic(err)
+	}
+
+	return i
+}
+
+func ScanPort(ip string, port int, timeout time.Duration) {
+	target := fmt.Sprintf("%s:%d", ip, port)
+	conn, err := net.DialTimeout("tcp", target, timeout)
+
+	if err != nil {
+		if strings.Contains(err.Error(), "too many open files") {
+			time.Sleep(timeout)
+			ScanPort(ip, port, timeout)
+		} else {
+			fmt.Println(port, "closed")
+		}
+		return
+	}
+
+	conn.Close()
+	fmt.Println(port, "open")
+}
+
+func (ps *PortScanner) Start(f, l int, timeout time.Duration) {
+	wg := sync.WaitGroup{}
+	defer wg.Wait()
+
+	for port := f; port <= l; port++ {
+		ps.lock.Acquire(context.TODO(), 1)
+		wg.Add(1)
+		go func(port int) {
+			defer ps.lock.Release(1)
+			defer wg.Done()
+			ScanPort(ps.ip, port, timeout)
+		}(port)
+	}
+}
+
+// func main() {
+// 	ps := &PortScanner{
+// 		ip:   "127.0.0.1",
+// 		lock: semaphore.NewWeighted(Ulimit()),
 // 	}
-// }
-
-// // TODO: merge error handling functions
-// func errPrinter(err error) {
-// 	if err != nil {
-// 		fmt.Fprintf(os.Stderr, "[Error] %s\n", err.Error())
-// 	}
-// }
-
-// func tcpStart(from string, to string) {
-// 	proto := "tcp"
-
-// 	localAddress, err := net.ResolveTCPAddr(proto, from)
-// 	errHandler(err)
-
-// 	remoteAddress, err := net.ResolveTCPAddr(proto, to)
-// 	errHandler(err)
-
-// 	listener, err := net.ListenTCP(proto, localAddress)
-// 	errHandler(err)
-
-// 	defer listener.Close()
-
-// 	fmt.Printf("Forwarding %s traffic from '%v' to '%v'\n", proto, localAddress, remoteAddress)
-// 	fmt.Println("<CTRL+C> to exit")
-// 	fmt.Println()
-
-// 	for {
-// 		src, err := listener.Accept()
-// 		errHandler(err)
-// 		fmt.Printf("New connection established from '%v'\n", src.RemoteAddr())
-// 		go fwd(src, to, proto)
-// 	}
-// }
-
-// func udpStart(from string, to string) {
-// 	proto := "udp"
-
-// 	localAddress, err := net.ResolveUDPAddr(proto, from)
-// 	errHandler(err)
-
-// 	remoteAddress, err := net.ResolveUDPAddr(proto, to)
-// 	errHandler(err)
-
-// 	listener, err := net.ListenUDP(proto, localAddress)
-// 	errHandler(err)
-// 	defer listener.Close()
-
-// 	dst, err := net.DialUDP(proto, nil, remoteAddress)
-// 	errHandler(err)
-// 	defer dst.Close()
-
-// 	fmt.Printf("Forwarding %s traffic from '%v' to '%v'\n", proto, localAddress, remoteAddress)
-// 	fmt.Println("<CTRL+C> to exit")
-// 	fmt.Println()
-
-// 	buf := make([]byte, 512)
-// 	for {
-// 		rnum, err := listener.Read(buf[0:])
-// 		errHandler(err)
-
-// 		_, err = dst.Write(buf[:rnum])
-// 		errHandler(err)
-
-// 		fmt.Printf("%d bytes forwared\n", rnum)
-// 	}
-// }
-
-// func ctrlc() {
-// 	sigs := make(chan os.Signal, 1)
-// 	signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
-// 	go func() {
-// 		sig := <-sigs
-// 		fmt.Println("\nExecution stopped by", sig)
-// 		os.Exit(0)
-// 	}()
+// 	ps.Start(1, 65535, 500*time.Millisecond)
 // }
