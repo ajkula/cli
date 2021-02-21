@@ -47,16 +47,11 @@ func listLocalAddresses(netw, ip string) {
 		}
 	}
 	if ip != "" {
+
 		fmt.Println("\n**********************************************************")
-		fmt.Println(" Remote Network details: \n")
+		fmt.Println(" Remote Network details for " + ip + ": \n")
 		ps := &PortScanner{
-			ip: func(ip string) string {
-				if ip != "" {
-					return ip
-				} else {
-					return "127.0.0.1"
-				}
-			}(ip),
+			ip:   ip,
 			lock: semaphore.NewWeighted(1024),
 		}
 		ps.Start(1, 65535, 500*time.Millisecond)
