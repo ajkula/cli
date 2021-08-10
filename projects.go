@@ -41,7 +41,6 @@ func createProject(name string) Project {
 	project.serverFile = `
 const express = require('express');
 const test = require('./controllers/testController');
-const bodyParser = require('body-parser');
 const fs = require('fs');
 
 module.exports = class Server {
@@ -52,7 +51,7 @@ module.exports = class Server {
     constructor () {
       this.container = {user: "greg"}
       this.app = express()
-      this.app.use(bodyParser.json())
+      this.app.use(express.json())
       this.loadDBs()
       this.loadControllers()
       
