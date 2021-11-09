@@ -378,6 +378,7 @@ func (pr Folders) write(name string) {
 	ept.Flush()
 
 	apiTests, err := os.Create(pr.test + filenames.apiTests)
+	fmt.Println("os create:", pr.test+filenames.apiTests)
 	check(err)
 	defer apiTests.Close()
 	apt := bufio.NewWriter(apiTests)
@@ -404,13 +405,13 @@ func (pr Folders) write(name string) {
 	fmt.Println("wrote "+pr.controllers+filenames.healthControllerFile, intToString(b)+" bytes")
 	hlc.Flush()
 
-	testControllerFile, err := os.Create(pr.test + filenames.testControllerFile)
+	testControllerFile, err := os.Create(pr.controllers + filenames.testControllerFile)
 	check(err)
 	defer testControllerFile.Close()
 	tst := bufio.NewWriter(testControllerFile)
 	b, err = tst.WriteString(createProject(name).testControllerFile)
 	check(err)
-	fmt.Println("wrote "+pr.test+filenames.testControllerFile, intToString(b)+" bytes")
+	fmt.Println("wrote "+pr.controllers+filenames.testControllerFile, intToString(b)+" bytes")
 	tst.Flush()
 
 	abstractModelFile, err := os.Create(pr.models + filenames.abstractModelFile)
