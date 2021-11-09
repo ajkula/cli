@@ -29,6 +29,7 @@ type Folders struct {
 	controllers   string
 	connectors    string
 	models        string
+	test          string
 }
 
 // Filenames struct
@@ -39,6 +40,7 @@ type Filenames struct {
 	testControllerFile     string
 	healthControllerFile   string
 	abstractControllerFile string
+	apiTests               string
 	packageJSON            string
 	storeMock              string
 	readme                 string
@@ -105,6 +107,7 @@ func main() {
 		folders.connectors = folders.currentFolder + "connectors/"
 		folders.controllers = folders.currentFolder + "controllers/"
 		folders.models = folders.currentFolder + "models/"
+		folders.test = folders.currentFolder + "test/"
 
 		filenames.gitignore = ".gitignore"
 		filenames.abstractModelFile = "AbstractModel.js"
@@ -116,6 +119,7 @@ func main() {
 		filenames.serverFile = "Server.js"
 		filenames.storeMock = "store-mock.json"
 		filenames.testControllerFile = "testController.js"
+		filenames.apiTests = "apiTests.js"
 		filenames.empty = "EMPTY"
 		folders.write(proj)
 	}
@@ -300,6 +304,8 @@ func (pr Folders) write(name string) {
 	cmd.Start()
 	cmd = exec.Command("mkdir", pr.models)
 	cmd.Start()
+	cmd = exec.Command("mkdir", pr.test)
+	cmd.Start()
 	cmd = exec.Command("mkdir", pr.connectors)
 	cmd.Start()
 	cmd = exec.Command("mkdir", pr.controllers)
@@ -371,6 +377,15 @@ func (pr Folders) write(name string) {
 	fmt.Println("wrote "+pr.connectors+filenames.empty, intToString(b)+" bytes")
 	ept.Flush()
 
+	apiTests, err := os.Create(pr.test + filenames.apiTests)
+	check(err)
+	defer apiTests.Close()
+	apt := bufio.NewWriter(apiTests)
+	b, err = apt.WriteString(createProject(name).apiTests)
+	check(err)
+	fmt.Println("wrote "+pr.test+filenames.apiTests, intToString(b)+" bytes")
+	apt.Flush()
+
 	abstractControllerFile, err := os.Create(pr.controllers + filenames.abstractControllerFile)
 	check(err)
 	defer abstractControllerFile.Close()
@@ -412,6 +427,8 @@ func (pr Folders) write(name string) {
 	out, err := cmd.Output()
 	check(err)
 	fmt.Println(string(out))
+	cmd = exec.Command("npm", "run", "test")
+	cmd.Dir = name
 
 	cmd = exec.Command("explorer", ".")
 	cmd.Dir = name
