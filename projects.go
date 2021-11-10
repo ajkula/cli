@@ -1,12 +1,5 @@
 package main
 
-import (
-	"bytes"
-	"fmt"
-	"log"
-	"os/exec"
-)
-
 // Project struct data
 type Project struct {
 	serverFile             string
@@ -23,7 +16,7 @@ type Project struct {
 	empty                  string
 }
 
-func project() {
+/* func project() {
 	cmd := exec.Command("go", "version")
 	var stdout, stderr bytes.Buffer
 	cmd.Stdout = &stdout
@@ -34,7 +27,7 @@ func project() {
 	}
 	outStr, errStr := string(stdout.Bytes()), string(stderr.Bytes())
 	fmt.Printf("out:\n%s\nerr:\n%s\n", outStr, errStr)
-}
+} */
 
 func createProject(name string) Project {
 	var project Project

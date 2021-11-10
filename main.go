@@ -368,15 +368,6 @@ func (pr Folders) write(name string) {
 	fmt.Println("wrote "+pr.currentFolder+filenames.storeMock, intToString(b)+" bytes")
 	str.Flush()
 
-	empty, err := os.Create(pr.connectors + filenames.empty)
-	check(err)
-	defer empty.Close()
-	ept := bufio.NewWriter(empty)
-	b, err = ept.WriteString(createProject(name).empty)
-	check(err)
-	fmt.Println("wrote "+pr.connectors+filenames.empty, intToString(b)+" bytes")
-	ept.Flush()
-
 	apiTests, err := os.Create(pr.test + filenames.apiTests)
 	fmt.Println("os create:", pr.test+filenames.apiTests)
 	check(err)
@@ -386,6 +377,15 @@ func (pr Folders) write(name string) {
 	check(err)
 	fmt.Println("wrote "+pr.test+filenames.apiTests, intToString(b)+" bytes")
 	apt.Flush()
+
+	empty, err := os.Create(pr.connectors + filenames.empty)
+	check(err)
+	defer empty.Close()
+	ept := bufio.NewWriter(empty)
+	b, err = ept.WriteString(createProject(name).empty)
+	check(err)
+	fmt.Println("wrote "+pr.connectors+filenames.empty, intToString(b)+" bytes")
+	ept.Flush()
 
 	abstractControllerFile, err := os.Create(pr.controllers + filenames.abstractControllerFile)
 	check(err)
@@ -430,9 +430,15 @@ func (pr Folders) write(name string) {
 	fmt.Println(string(out))
 	cmd = exec.Command("npm", "run", "test")
 	cmd.Dir = name
+	out, err = cmd.Output()
+	check(err)
+	fmt.Println(string(out))
 
 	cmd = exec.Command("explorer", ".")
 	cmd.Dir = name
+	out, err = cmd.Output()
+	check(err)
+	fmt.Println(string(out))
 	cmd.Start()
 }
 
