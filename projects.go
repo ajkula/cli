@@ -392,7 +392,7 @@ const newUser = {
 }
 const test404Get = id => { return {status: 404, message: ` + "`${id} undefined`" + `}};
 
-describe('Health Check', () => {
+describe('Api Tests', () => {
     
 before(function (done) {
     app.set("PORT", 3500);
@@ -411,8 +411,8 @@ before(function (done) {
         });
     });
 
-    describe('/GET existing test user 1', () => {
-        it('it should GET user 1', (done) => {
+    describe('/GET test', () => {
+        it('it should GET existing user 1', (done) => {
             chai.request(app.listen(app.get("port")))
                 .get('/test/1')
                 .end((err, res) => {
@@ -424,8 +424,8 @@ before(function (done) {
         });
     });
 
-    describe('/GET test unknown user 2', () => {
-        it('it should GET 404 id undefined', (done) => {
+    describe('/GET test', () => {
+        it('it should GET 404 user id 2 undefined', (done) => {
             let id = 3;
             chai.request(app.listen(app.get("port")))
                 .get('/test/' + id)
@@ -438,8 +438,8 @@ before(function (done) {
         });
     });
 
-    describe('/POST test new user 2', () => {
-        it('it should POST new user id: 2', (done) => {
+    describe('/POST test', () => {
+        it('it should POST new user id: '+newUser.id, (done) => {
             let id = 3;
             chai.request(app.listen(app.get("port")))
                 .post('/test')
