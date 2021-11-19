@@ -6,6 +6,7 @@ package main
 import (
 	"bufio"
 	"fmt"
+	"math"
 	"os"
 	"os/exec"
 	"strconv"
@@ -67,6 +68,7 @@ var (
 	proj      string
 	dir       string
 	osTool    string
+	docker    string
 	folders   Folders
 	filenames Filenames
 )
@@ -98,6 +100,9 @@ func main() {
 		ListOSTools()
 	}
 
+	if docker == "l" || docker == "list" {
+		ListContainer()
+	}
 	// ReadSettingsFile()
 	listLocalAddresses(netw, ip)
 
@@ -216,9 +221,7 @@ func main() {
 					fmt.Println("******************* Statistics *********************")
 					if len(result.Stats) > 0 {
 						for stat, i := range result.Stats {
-							x := strings.Repeat(" ", 29-len(stat+strconv.Itoa(i)))
-							// y := strings.Repeat(" ", 3-len(strconv.Itoa(i)))
-							fmt.Println(`*      ` + stat + x + strconv.Itoa(i) + " %")
+							formatSpacedStringWithItoa(stat, i)
 						}
 					}
 					fmt.Println("****************************************************")
@@ -240,6 +243,47 @@ func main() {
 		city = cleanQuotes(city)
 		DisplayWeather(city)
 	}
+}
+
+func formatSpacedStringWithItoa(str string, i int) {
+	formatSpacedStrings(str, strconv.Itoa(i), `*      `, " %")
+}
+
+func Abs(x int) int {
+	if x == math.MinInt64 {
+		return math.MaxInt64
+	}
+	if x < 0 {
+		return -x
+	}
+	return x
+}
+
+func formatSpacedStrings(strA, strB string, arr ...string) {
+	left := ""
+	right := ""
+	defaultLength := 29
+
+	if len(arr) > 0 {
+		left = arr[0]
+	}
+
+	if len(arr) > 1 {
+		right = arr[1]
+	}
+
+	if len(arr) > 2 {
+		val, err := strconv.Atoi(arr[2])
+		if err == nil {
+			defaultLength = val
+		}
+	}
+
+	x := strings.Repeat(" ", Abs(defaultLength-len(strA)))
+	fmt.Println(left + strA + x + strB + right)
+
+	//  x := strings.Repeat(" ", 29-len(stat+strconv.Itoa(i)))
+	//  fmt.Println(`*      ` + stat + x + strconv.Itoa(i) + " %")
 }
 
 // "for... range" loop in GO allows us to iterate over each element of the array.
@@ -275,6 +319,7 @@ func init() {
 	flag.StringVarP(&proj, "project", "p", "", "Create a Node.js micro-service by a name\n        Usage: cli -p [project name]\n        to use in terminal emulator under win env\n")
 	flag.StringVarP(&publi, "publi", "P", "", "Find scientific publications by search-word\n        Usage: cli -P [search term]\n")
 	flag.StringVarP(&osTool, "env", "e", "", "Display the env as key/val")
+	flag.StringVarP(&docker, "docker", "d", "", "Docker tool\n        Usage: cli -d [list/l]\n")
 	flag.StringVarP(&x, "x", "x", "", "Width in chars of displayed ascii images")
 	flag.StringVarP(&netw, "net", "N", "", "List local Network available adresses")
 	flag.StringVarP(&ip, "ip", "i", "", "Remote Network details")
