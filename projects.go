@@ -46,7 +46,7 @@ module.exports = class Server {
       this.container = {user: "greg"};
       this.app = express();
       this.app.use(express.json());
-	  this.app.use(express.static('public'));
+	  this.app.use('/static', express.static(__dirname + '/public'));
       this.loadDBs();
       this.loadControllers();
       
