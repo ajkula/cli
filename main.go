@@ -31,6 +31,7 @@ type Folders struct {
 	connectors    string
 	models        string
 	test          string
+	public        string
 }
 
 // Filenames struct
@@ -113,6 +114,7 @@ func main() {
 		folders.controllers = folders.currentFolder + "controllers/"
 		folders.models = folders.currentFolder + "models/"
 		folders.test = folders.currentFolder + "test/"
+		folders.public = folders.currentFolder + "public/"
 
 		filenames.gitignore = ".gitignore"
 		filenames.abstractModelFile = "AbstractModel.js"
@@ -346,6 +348,8 @@ func (pr Folders) write(name string) {
 	cmd = exec.Command("mkdir", name)
 	cmd.Start()
 	cmd = exec.Command("cd", name)
+	cmd.Start()
+	cmd = exec.Command("mkdir", pr.public)
 	cmd.Start()
 	cmd = exec.Command("mkdir", pr.models)
 	cmd.Start()

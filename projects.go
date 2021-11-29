@@ -43,11 +43,11 @@ module.exports = class Server {
      * Init project
      */
     constructor () {
-      this.container = {user: "greg"}
-      this.app = express()
-      this.app.use(express.json())
-      this.loadDBs()
-      this.loadControllers()
+      this.container = {user: "greg"};
+      this.app = express();
+      this.app.use(express.json());
+      this.loadDBs();
+      this.loadControllers();
       
     }
 
@@ -57,9 +57,9 @@ module.exports = class Server {
   async loadDBs () {
     // const dynamoConnector = new DynamoConnector('dbName', false)
     // this.container.campaignModel = new CampaignModel(dynamoConnector)
-    this.container.storeModel = new Map()
+    this.container.storeModel = new Map();
     Object.entries(require('./store-mock.json')).forEach(([k, v]) => {
-			this.container.storeModel.set(k, v)
+			this.container.storeModel.set(k, v);
     });
   }
 
@@ -67,12 +67,12 @@ module.exports = class Server {
    * Load Http controllers
    */
   loadControllers () {
-    console.log(__dirname + '/controllers/')
-    const files = fs.readdirSync(__dirname + '/controllers/')
+    console.log(__dirname + '/controllers/');
+    const files = fs.readdirSync(__dirname + '/controllers/');
     files.forEach((file) => {
       if (/Controller\.js/.test(file)) {
-        const classCtrl = require(__dirname + '/controllers/' + file)
-        this.app.use(new classCtrl(this.container).router)
+        const classCtrl = require(__dirname + '/controllers/' + file);
+        this.app.use(new classCtrl(this.container).router);
       }
     })
   }
@@ -205,7 +205,7 @@ app.listen(port, function () {
 	
 		get (serviceId) {
 			if (!this.isTest) console.log("get (" + serviceId + ")")
-			return this.container[serviceId]
+			return this.container[serviceId];
 		}
 	}
 	`
@@ -217,9 +217,9 @@ app.listen(port, function () {
 		constructor(container) {
 			super(container)
 	
-			this.anyModel = this.get('user')
+			this.anyModel = this.get('user');
 			// Load routes
-			this.router.get('/health', this.checkHealth.bind(this))
+			this.router.get('/health', this.checkHealth.bind(this));
 		}
 	
 		/**
@@ -229,7 +229,7 @@ app.listen(port, function () {
 		 */
 		async checkHealth(req, res) {
 			// const status = await this.anyModel // some async call
-			res.json({status:'UP'})
+			res.json({status:'UP'});
 		}
 	}
 	`
