@@ -72,8 +72,10 @@ module.exports = class Server {
 	files.forEach((file) => {
 		if (/Controller\.js/.test(file)) {
 		const classCtrl = require(__dirname + '/controllers/' + file);
-		this.app.use(new classCtrl(this.container).router);
-		logule.info(__dirname + '/controllers/'+file);
+        const Instance = new classCtrl(this.container).router;
+        this.app.use(Instance);
+        logule.info(__dirname + '/controllers/' + file);
+        Instance.stack.forEach(layer => logule.info({path: layer.route.path, method: layer.route.methods}));
 		}
 	})
 	}
