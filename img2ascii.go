@@ -19,7 +19,8 @@ import (
 )
 
 // ASCIISTR string contains all the runes to construct ASCII img
-var ASCIISTR = "MND8OZ$7I?+=~:,.."
+// var ASCIISTR = "MND8OZ$7I?+=~:,.."
+var ASCIISTR = "..,:~=+?I7$ZO8DNM"
 
 func byPassErrors(e error) error {
 	if e != nil {
